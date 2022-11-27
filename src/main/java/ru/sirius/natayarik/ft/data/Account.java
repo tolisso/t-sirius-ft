@@ -1,5 +1,9 @@
 package ru.sirius.natayarik.ft.data;
 
+/**
+ * @author Egor Malko
+ */
+
 public class Account {
 
     private int id;

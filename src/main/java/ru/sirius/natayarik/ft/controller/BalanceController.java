@@ -1,12 +1,12 @@
 package ru.sirius.natayarik.ft.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sirius.natayarik.ft.data.Balance;
-
-import java.util.List;
+import ru.sirius.natayarik.ft.services.BalanceServices;
 
 /**
  * @author Yaroslav Ilin
@@ -15,11 +15,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/balance")
 public class BalanceController {
+    private final BalanceServices balanceServices;
+
+    @Autowired
+    public BalanceController(BalanceServices balanceServices) {
+        this.balanceServices = balanceServices;
+    }
 
     @GetMapping("/get")
     @ResponseBody
     public Balance getBalance() {
-        return null;
+        return balanceServices.getBalance();
     }
 
 }
