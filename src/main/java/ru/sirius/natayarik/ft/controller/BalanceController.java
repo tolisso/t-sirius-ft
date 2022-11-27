@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sirius.natayarik.ft.data.Balance;
 
-import java.util.List;
-
 /**
  * @author Yaroslav Ilin
  */
