@@ -9,39 +9,39 @@ import java.util.List;
  */
 
 @RestController
+@RequestMapping("/api/operation/")
 public class OperationsController {
 
-    @PostMapping("/api/createOperation")
+    @PostMapping("/create")
 //    NOTE: change param type
     public void createOperation(@RequestParam String operation) {
 
     }
 
-    @GetMapping("/api/getAllOperations")
+    @GetMapping("/getAll")
     @ResponseBody
 //    NOTE: change result type
     public List<String> getAllOperations() {
         return null;
     }
 
-    @GetMapping("/api/getOperationFromId")
+    @GetMapping("/getFromId")
     @ResponseBody
 //    NOTE: change result type
     public String getOperationFromId() {
         return null;
     }
 
-    @DeleteMapping("/api/deleteOperation")
+    @DeleteMapping("/delete")
     public void deleteOperation() {
 
     }
 
-    @PutMapping("/api/changeOperation")
+    @PutMapping("/change")
 //    NOTE: change param type
     public void changeOperation(@RequestParam String operation) {
 
     }
-
 
 
 }
