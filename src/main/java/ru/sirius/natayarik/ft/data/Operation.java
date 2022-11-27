@@ -1,6 +1,6 @@
 package ru.sirius.natayarik.ft.data;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
 public class Operation {

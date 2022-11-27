@@ -1,6 +1,7 @@
 package ru.sirius.natayarik.ft.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.sirius.natayarik.ft.data.Operation;
 
 import java.util.List;
 
@@ -13,33 +14,29 @@ import java.util.List;
 public class OperationsController {
 
     @PostMapping("/create")
-//    NOTE: change param type
-    public void createOperation(@RequestParam String operation) {
+    public void createOperation(@RequestParam Operation operation) {
 
     }
 
     @GetMapping("/getAll")
     @ResponseBody
-//    NOTE: change result type
-    public List<String> getAllOperations() {
+    public List<Operation> getAllOperations(@RequestParam int accountId) {
         return null;
     }
 
     @GetMapping("/getFromId")
     @ResponseBody
-//    NOTE: change result type
-    public String getOperationFromId() {
+    public Operation getOperationFromId(@RequestParam int operationId) {
         return null;
     }
 
     @DeleteMapping("/delete")
-    public void deleteOperation() {
+    public void deleteOperation(@RequestParam int operationId) {
 
     }
 
     @PutMapping("/change")
-//    NOTE: change param type
-    public void changeOperation(@RequestParam String operation) {
+    public void changeOperation(@RequestParam Operation operation) {
 
     }
 

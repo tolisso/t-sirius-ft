@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.sirius.natayarik.ft.data.Balance;
 
 import java.util.List;
 
@@ -17,7 +18,8 @@ public class BalanceController {
 
     @GetMapping("/get")
     @ResponseBody
-    public List<Integer> getBalance() {
+    public Balance getBalance() {
         return null;
     }
+
 }
