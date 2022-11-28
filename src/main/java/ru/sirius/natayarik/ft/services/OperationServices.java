@@ -27,14 +27,14 @@ public class OperationServices {
         op1.setAccountId(accountId);
         op1.setAmount(BigDecimal.valueOf(42));
         op1.setCategory(new Category(0, 0, "Salary", Type.INCOME));
-        op1.setType(Type.INCOME);
+        //op1.setType(Type.INCOME);
         op1.setCreationDate(ZonedDateTime.now());
         Operation op2 = new Operation();
         op2.setId(1);
         op2.setAccountId(accountId);
         op2.setAmount(BigDecimal.valueOf(2281337));
         op2.setCategory(new Category(1, 228, "Gift", Type.OUTCOME));
-        op2.setType(Type.OUTCOME);
+        //op2.setType(Type.OUTCOME);
         op2.setCreationDate(ZonedDateTime.now());
         return List.of(op1, op2);
     }
@@ -42,7 +42,7 @@ public class OperationServices {
     public Operation getFromId(final int operationId) {
         Operation result = new Operation();
         result.setId(operationId);
-        result.setType(Type.OUTCOME);
+        //result.setType(Type.OUTCOME);
         result.setCategory(new Category(2, 123, "Medicine", Type.OUTCOME));
         result.setCreationDate(ZonedDateTime.now());
         result.setAccountId(42);

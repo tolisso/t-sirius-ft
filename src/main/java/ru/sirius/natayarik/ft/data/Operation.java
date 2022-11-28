@@ -47,14 +47,6 @@ public class Operation {
         this.creationDate = creationDate;
     }
 
-    public Type getType() {
-        return category.getType();
-    }
-
-    public void setType(Type type) {
-        category.setType(type);
-    }
-
     public Category getCategory() {
         return category;
     }
