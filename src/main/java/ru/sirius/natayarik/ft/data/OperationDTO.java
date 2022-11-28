@@ -9,25 +9,25 @@ import java.time.ZonedDateTime;
 
 public class OperationDTO {
 
-    private int id;
-    private int accountId;
+    private long id;
+    private long accountId;
     private BigDecimal amount;
     private ZonedDateTime creationDate;
     private CategoryDTO category;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(int accountId) {
+    public void setAccountId(long accountId) {
         this.accountId = accountId;
     }
 

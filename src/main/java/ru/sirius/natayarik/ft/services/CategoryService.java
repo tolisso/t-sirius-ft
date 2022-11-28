@@ -11,20 +11,18 @@ import java.util.List;
  */
 
 @Service
-public class CategoryServices {
+public class CategoryService {
     public CategoryDTO create(CategoryDTO category) {
         category.setId(424243);
         return category;
     }
 
     public List<CategoryDTO> getAll(TypeDTO typeDTO) {
-        return List.of(new CategoryDTO(0, 0, "Salary", TypeDTO.INCOME),
-                new CategoryDTO(1, 228, "Gift", TypeDTO.OUTCOME),
-                new CategoryDTO(2, 123, "Medicine", TypeDTO.OUTCOME));
+        return null;
     }
 
     public CategoryDTO getFromId(int categoryId) {
-        return new CategoryDTO(categoryId, 324124, "KEKLOL", TypeDTO.INCOME);
+        return null;
     }
 
     public void delete(int categoryId) {

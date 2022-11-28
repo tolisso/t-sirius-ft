@@ -61,6 +61,7 @@
                              referencedTableName="categories"
                              referencedColumnNames="id"/>
             </column>
+            <column name="date" valueDate="${now}"/>
         </createTable>
         <createSequence sequenceName="operation_seq" startValue="100" incrementBy="1"/>
     </changeSet>
