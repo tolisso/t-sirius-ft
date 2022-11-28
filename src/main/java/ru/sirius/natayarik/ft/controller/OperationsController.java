@@ -41,7 +41,7 @@ public class OperationsController {
 
     @DeleteMapping("/delete")
     public void deleteOperation(@RequestParam int operationId) {
-        operationServices.delete(operationId); // TODO
+        operationServices.delete(operationId);
     }
 
     @PutMapping("/change")
