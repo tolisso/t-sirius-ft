@@ -47,13 +47,6 @@ public class OperationDTO {
         this.creationDate = creationDate;
     }
 
-    public TypeDTO getType() {
-        return category.getType();
-    }
-
-    public void setType(TypeDTO typeDTO) {
-        category.setType(typeDTO);
-    }
 
     public CategoryDTO getCategory() {
         return category;

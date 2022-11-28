@@ -33,7 +33,7 @@ public class OperationsController {
 
 
     @PostMapping("/create")
-    public OperationDTO createOperation(@RequestParam OperationDTO operation) {
+    public OperationDTO createOperation(@RequestBody OperationDTO operation) {
         return OperationsConverter.convertToDTO(
                 operationService.create(
                         OperationsConverter.convertToEntity(operation, accountService, userService)));
@@ -58,7 +58,7 @@ public class OperationsController {
     }
 
     @PutMapping("/change")
-    public OperationDTO changeOperation(@RequestParam OperationDTO operation) {
+    public OperationDTO changeOperation(@RequestBody OperationDTO operation) {
         return OperationsConverter.convertToDTO(
                 operationService.change(
                         OperationsConverter.convertToEntity(operation, accountService, userService)));

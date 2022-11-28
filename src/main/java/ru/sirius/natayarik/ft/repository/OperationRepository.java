@@ -11,6 +11,5 @@ import java.util.List;
  */
 
 public interface OperationRepository extends CrudRepository<OperationEntity, Long> {
-//    TODO: В целом кажется id нужно бы переделать в long
-    List<OperationEntity> findAllByAccount(AccountEntity account); // TODO: Существует метод findAllById в CrudRepository, но он принимает Iterable<Integer>
+    List<OperationEntity> findAllByAccountOrderByCreationDateDesc(AccountEntity account);
 }

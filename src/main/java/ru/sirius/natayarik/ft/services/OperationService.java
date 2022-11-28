@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class OperationService {
     private final OperationRepository operationRepository;
-    private final AccountService accountService; // TODO: не понятно можно ли так делать.
+    private final AccountService accountService;
 
     public OperationService(OperationRepository operationRepository, AccountService accountService) {
         this.operationRepository = operationRepository;
@@ -27,14 +27,14 @@ public class OperationService {
 
 
     public OperationEntity create(final OperationEntity operation) {
-        operation.setCreationDate(ZonedDateTime.now());
+        operation.setCreationDate(ZonedDateTime.now()); // TODO если не null
 //        operation.setId(42);
 //        return operation;
         return operationRepository.save(operation);
     }
 
     public List<OperationEntity> getAll(final long accountId) {
-        return operationRepository.findAllByAccount(accountService.getAccountById(accountId));
+        return operationRepository.findAllByAccountOrderByCreationDateDesc(accountService.getAccountById(accountId));
     }
 
     public OperationEntity getFromId(final long operationId) {
