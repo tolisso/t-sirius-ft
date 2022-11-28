@@ -21,7 +21,7 @@ public class Operation {
    @Column(name = "amount")
    private BigDecimal amount;
    @ManyToOne
-   @Column(name = "category_id")
+   @JoinColumn(name = "category_id")
    private Category category;
 
    public long getId() {
