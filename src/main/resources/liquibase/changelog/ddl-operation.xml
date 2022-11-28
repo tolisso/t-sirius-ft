@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="create-user" author="yar">
+        <createTable tableName="users">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+        <createSequence sequenceName="user_seq" startValue="100" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="create-account" author="yar">
+        <createTable tableName="accounts">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="accounts_users_fk"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="balance" type="decimal()"/>
+        </createTable>
+        <createSequence sequenceName="account_seq" startValue="100" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="create-category" author="yar">
+        <createTable tableName="categories">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="categories_users_fk"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="type" type="varchar(255)"/>  <!-- Check! -->
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-operation" author="yar">
+        <createTable tableName="operations">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="bigint">
+                <constraints foreignKeyName="operations_accounts_fk"
+                             referencedTableName="accounts"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="amount" type="decimal"/>
+            <column name="category_id" type="bigint">
+                <constraints foreignKeyName="accounts_categories_fk"
+                             referencedTableName="categories"
+                             referencedColumnNames="id"/>
+            </column>
+        </createTable>
+        <createSequence sequenceName="operation_seq" startValue="100" incrementBy="1"/>
+    </changeSet>
+</databaseChangeLog>
