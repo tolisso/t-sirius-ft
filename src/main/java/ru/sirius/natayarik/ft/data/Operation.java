@@ -13,8 +13,8 @@ public class Operation {
     private int accountId;
     private BigDecimal amount;
     private ZonedDateTime creationDate;
-    private Type type;
     private Category category;
+
     public int getId() {
         return id;
     }
@@ -48,11 +48,11 @@ public class Operation {
     }
 
     public Type getType() {
-        return type;
+        return category.getType();
     }
 
     public void setType(Type type) {
-        this.type = type;
+        category.setType(type);
     }
 
     public Category getCategory() {
