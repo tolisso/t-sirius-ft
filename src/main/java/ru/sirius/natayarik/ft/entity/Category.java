@@ -16,11 +16,13 @@ public class Category {
    @Column(name = "id")
    private long id;
 
-   @ManyToOne
    @JoinColumn(name = "user_id")
+   @ManyToOne
    private User user;
+
    @Column(name = "name")
    private String name;
+
    @Enumerated(value = EnumType.STRING)
    @Column(name = "type")
    private Type type;
