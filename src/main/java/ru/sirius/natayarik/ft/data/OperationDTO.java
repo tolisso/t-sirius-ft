@@ -7,13 +7,13 @@ import java.time.ZonedDateTime;
  * @author Egor Malko
  */
 
-public class Operation {
+public class OperationDTO {
 
     private int id;
     private int accountId;
     private BigDecimal amount;
     private ZonedDateTime creationDate;
-    private Category category;
+    private CategoryDTO category;
 
     public int getId() {
         return id;
@@ -47,11 +47,19 @@ public class Operation {
         this.creationDate = creationDate;
     }
 
-    public Category getCategory() {
+    public TypeDTO getType() {
+        return category.getType();
+    }
+
+    public void setType(TypeDTO typeDTO) {
+        category.setType(typeDTO);
+    }
+
+    public CategoryDTO getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(CategoryDTO category) {
         this.category = category;
     }
 }

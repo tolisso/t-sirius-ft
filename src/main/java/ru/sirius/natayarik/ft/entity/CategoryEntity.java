@@ -1,6 +1,6 @@
 package ru.sirius.natayarik.ft.entity;
 
-import ru.sirius.natayarik.ft.data.Type;
+import ru.sirius.natayarik.ft.data.TypeDTO;
 
 import javax.persistence.*;
 
@@ -10,22 +10,20 @@ import javax.persistence.*;
 @Entity
 @Table(name = "categories")
 @SequenceGenerator(allocationSize = 1, name = "category_seq", sequenceName = "category_seq")
-public class Category {
+public class CategoryEntity {
    @Id
    @GeneratedValue(generator = "category_seq")
    @Column(name = "id")
    private long id;
 
-   @JoinColumn(name = "user_id")
    @ManyToOne
-   private User user;
-
+   @JoinColumn(name = "user_id")
+   private UserEntity user;
    @Column(name = "name")
    private String name;
-
    @Enumerated(value = EnumType.STRING)
    @Column(name = "type")
-   private Type type;
+   private TypeDTO typeDTO;
 
    public long getId() {
       return id;
@@ -35,11 +33,11 @@ public class Category {
       this.id = id;
    }
 
-   public User getUser() {
+   public UserEntity getUser() {
       return user;
    }
 
-   public void setUser(User user) {
+   public void setUser(UserEntity user) {
       this.user = user;
    }
 
@@ -51,11 +49,11 @@ public class Category {
       this.name = name;
    }
 
-   public Type getType() {
-      return type;
+   public TypeDTO getType() {
+      return typeDTO;
    }
 
-   public void setType(Type type) {
-      this.type = type;
+   public void setType(TypeDTO typeDTO) {
+      this.typeDTO = typeDTO;
    }
 }

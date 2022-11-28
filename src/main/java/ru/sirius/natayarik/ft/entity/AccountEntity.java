@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "accounts")
 @SequenceGenerator(allocationSize = 1, name = "account_seq", sequenceName = "account_seq")
-public class Account {
+public class AccountEntity {
     @Id
     @GeneratedValue(generator = "account_seq")
     @Column(name = "id")
@@ -17,7 +17,7 @@ public class Account {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity user;
     @Column(name = "name")
     private String name;
     @Column(name = "balance")
@@ -31,11 +31,11 @@ public class Account {
         this.id = id;
     }
 
-    public User getUser() {
+    public UserEntity getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserEntity user) {
         this.user = user;
     }
 

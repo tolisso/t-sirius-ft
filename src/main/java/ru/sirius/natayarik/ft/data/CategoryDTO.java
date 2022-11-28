@@ -4,21 +4,21 @@ package ru.sirius.natayarik.ft.data;
  * @author Yaroslav Ilin
  */
 
-public class Category {
+public class CategoryDTO {
 
     private int id;
     private int userId;
     private String name;
-    private Type type;
+    private TypeDTO typeDTO;
 
-    public Category() {
+    public CategoryDTO() {
     }
 
-    public Category(int id, int userId, String name, Type type) {
+    public CategoryDTO(int id, int userId, String name, TypeDTO typeDTO) {
         this.id = id;
         this.userId = userId;
         this.name = name;
-        this.type = type;
+        this.typeDTO = typeDTO;
     }
 
     public int getId() {
@@ -45,11 +45,11 @@ public class Category {
         this.name = name;
     }
 
-    public Type getType() {
-        return type;
+    public TypeDTO getType() {
+        return typeDTO;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(TypeDTO typeDTO) {
+        this.typeDTO = typeDTO;
     }
 }

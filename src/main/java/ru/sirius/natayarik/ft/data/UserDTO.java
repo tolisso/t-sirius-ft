@@ -4,7 +4,7 @@ package ru.sirius.natayarik.ft.data;
  * @author Egor Malko
  */
 
-public class User {
+public class UserDTO {
 
     private int id;
 

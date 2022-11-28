@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "operations")
 @SequenceGenerator(allocationSize = 1, name = "operation_seq", sequenceName = "operation_seq")
-public class Operation {
+public class OperationEntity {
    @Id
    @GeneratedValue(generator = "operation_seq")
    @Column(name = "id")
@@ -17,12 +17,12 @@ public class Operation {
 
    @ManyToOne
    @JoinColumn(name = "account_id")
-   private Account account;
+   private AccountEntity account;
    @Column(name = "amount")
    private BigDecimal amount;
    @ManyToOne
    @JoinColumn(name = "category_id")
-   private Category category;
+   private CategoryEntity categoryEntity;
 
    public long getId() {
       return id;
@@ -32,11 +32,11 @@ public class Operation {
       this.id = id;
    }
 
-   public Account getAccount() {
+   public AccountEntity getAccount() {
       return account;
    }
 
-   public void setAccount(Account account) {
+   public void setAccount(AccountEntity account) {
       this.account = account;
    }
 
@@ -48,11 +48,11 @@ public class Operation {
       this.amount = amount;
    }
 
-   public Category getCategory() {
-      return category;
+   public CategoryEntity getCategory() {
+      return categoryEntity;
    }
 
-   public void setCategory(Category category) {
-      this.category = category;
+   public void setCategory(CategoryEntity categoryEntity) {
+      this.categoryEntity = categoryEntity;
    }
 }

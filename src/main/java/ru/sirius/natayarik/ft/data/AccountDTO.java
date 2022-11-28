@@ -4,12 +4,12 @@ package ru.sirius.natayarik.ft.data;
  * @author Egor Malko
  */
 
-public class Account {
+public class AccountDTO {
 
     private int id;
     private int userId;
     private String name;
-    private Currency currency;
+    private CurrencyDTO currency;
 
     public int getId() {
         return id;
@@ -35,11 +35,11 @@ public class Account {
         this.name = name;
     }
 
-    public Currency getCurrency() {
+    public CurrencyDTO getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(CurrencyDTO currency) {
         this.currency = currency;
     }
 }

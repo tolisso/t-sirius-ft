@@ -6,7 +6,7 @@ import java.math.BigDecimal;
  * @author Yaroslav Ilin
  */
 
-public class Balance {
+public class BalanceDTO {
     private BigDecimal amount;
     private BigDecimal income;
     private BigDecimal outcome;

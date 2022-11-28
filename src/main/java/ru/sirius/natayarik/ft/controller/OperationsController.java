@@ -2,7 +2,7 @@ package ru.sirius.natayarik.ft.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.sirius.natayarik.ft.data.Operation;
+import ru.sirius.natayarik.ft.data.OperationDTO;
 import ru.sirius.natayarik.ft.services.OperationServices;
 
 import java.util.List;
@@ -23,19 +23,19 @@ public class OperationsController {
 
 
     @PostMapping("/create")
-    public Operation createOperation(@RequestParam Operation operation) {
+    public OperationDTO createOperation(@RequestParam OperationDTO operation) {
         return operationServices.create(operation);
     }
 
     @GetMapping("/getAll")
     @ResponseBody
-    public List<Operation> getAllOperations(@RequestParam int accountId) {
+    public List<OperationDTO> getAllOperations(@RequestParam int accountId) {
         return operationServices.getAll(accountId);
     }
 
     @GetMapping("/getFromId")
     @ResponseBody
-    public Operation getOperationFromId(@RequestParam int operationId) {
+    public OperationDTO getOperationFromId(@RequestParam int operationId) {
         return operationServices.getFromId(operationId);
     }
 
@@ -45,7 +45,7 @@ public class OperationsController {
     }
 
     @PutMapping("/change")
-    public Operation changeOperation(@RequestParam Operation operation) {
+    public OperationDTO changeOperation(@RequestParam OperationDTO operation) {
         return operationServices.change(operation);
     }
 }

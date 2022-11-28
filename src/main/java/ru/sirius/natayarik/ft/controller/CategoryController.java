@@ -2,9 +2,8 @@ package ru.sirius.natayarik.ft.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.sirius.natayarik.ft.data.Category;
-import ru.sirius.natayarik.ft.data.Operation;
-import ru.sirius.natayarik.ft.data.Type;
+import ru.sirius.natayarik.ft.data.CategoryDTO;
+import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.services.CategoryServices;
 
 import java.util.List;
@@ -25,19 +24,19 @@ public class CategoryController {
 
 
     @PostMapping("/create")
-    public Category createCategory(@RequestParam Category category) {
+    public CategoryDTO createCategory(@RequestParam CategoryDTO category) {
         return categoryServices.create(category);
     }
 
     @GetMapping("/getAll")
     @ResponseBody
-    public List<Category> getAllCategories(@RequestParam Type type) {
-        return categoryServices.getAll(type);
+    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO) {
+        return categoryServices.getAll(typeDTO);
     }
 
     @GetMapping("/getFromId")
     @ResponseBody
-    public Category getCategoryFromId(@RequestParam int categoryId) {
+    public CategoryDTO getCategoryFromId(@RequestParam int categoryId) {
         return categoryServices.getFromId(categoryId);
     }
 
@@ -47,7 +46,7 @@ public class CategoryController {
     }
 
     @PutMapping("/change")
-    public Category changeCategory(@RequestParam Category category) {
+    public CategoryDTO changeCategory(@RequestParam CategoryDTO category) {
         return categoryServices.change(category);
     }
 }
