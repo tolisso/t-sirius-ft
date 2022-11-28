@@ -1,0 +1,24 @@
+package ru.sirius.natayarik.ft.entity;
+
+import javax.persistence.*;
+
+/**
+ * @author Egor Malko
+ */
+@Entity
+@Table(name = "users")
+@SequenceGenerator(allocationSize = 1, name = "user_seq", sequenceName = "user_seq")
+public class User {
+    @Id
+    @GeneratedValue(generator = "user_seq")
+    @Column(name = "id")
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+}
