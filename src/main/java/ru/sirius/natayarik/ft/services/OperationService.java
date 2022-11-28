@@ -27,6 +27,7 @@ public class OperationService {
 
 
     public OperationEntity create(final OperationEntity operation) {
+        operation.setCreationDate(ZonedDateTime.now());
 //        operation.setId(42);
 //        return operation;
         return operationRepository.save(operation);
