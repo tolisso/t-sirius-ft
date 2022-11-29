@@ -8,4 +8,5 @@ import ru.sirius.natayarik.ft.entity.UserEntity;
  */
 
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
+    UserEntity findByName(String name);
 }

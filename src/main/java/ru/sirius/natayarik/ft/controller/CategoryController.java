@@ -31,11 +31,11 @@ public class CategoryController {
         return categoryService.create(category);
     }
 
-    @Operation(summary = "Метод для получения списка категорий по типу")
+    @Operation(summary = "Метод для получения списка категорий пользователя по типу")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam long userId) {
-        return categoryService.getAllFull(typeDTO, userId);
+    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO) {
+        return categoryService.getAll(typeDTO);
     }
 
     @Operation(summary = "Метод для получения категории по id")

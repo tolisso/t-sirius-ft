@@ -31,8 +31,8 @@ public class AccountController {
     @Operation(summary = "Метод для получения всех кошельков пользователя")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<AccountDTO> getAllAccounts(@RequestParam long userId) {
-        return accountService.getAll(userId);
+    public List<AccountDTO> getAllAccounts() {
+        return accountService.getAll();
     }
 
     @Operation(summary = "Метод для получения кошелька по id")

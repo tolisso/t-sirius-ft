@@ -5,11 +5,11 @@ package ru.sirius.natayarik.ft.data;
  */
 
 public class AccountDTO extends BaseDTO {
-    private int userId;
+    private long userId;
     private String name;
     private CurrencyDTO currency;
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 

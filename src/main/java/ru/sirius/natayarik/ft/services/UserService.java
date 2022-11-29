@@ -1,8 +1,12 @@
 package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
+import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.UserEntity;
+import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
+
+import java.math.BigDecimal;
 
 /**
  * @author Yaroslav Ilin
@@ -12,7 +16,7 @@ import ru.sirius.natayarik.ft.repository.UserRepository;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, CurrentUserService currentUserService, AccountRepository accountRepository) {
         this.userRepository = userRepository;
     }
 
