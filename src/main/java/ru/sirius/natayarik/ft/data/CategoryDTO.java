@@ -4,9 +4,7 @@ package ru.sirius.natayarik.ft.data;
  * @author Yaroslav Ilin
  */
 
-public class CategoryDTO {
-
-    private long id;
+public class CategoryDTO extends BaseDTO {
     private long userId;
     private String name;
     private TypeDTO typeDTO;

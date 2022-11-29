@@ -4,22 +4,12 @@ package ru.sirius.natayarik.ft.data;
  * @author Egor Malko
  */
 
-public class AccountDTO {
-
-    private long id;
-    private long userId;
+public class AccountDTO extends BaseDTO {
+    private int userId;
     private String name;
     private CurrencyDTO currency;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 

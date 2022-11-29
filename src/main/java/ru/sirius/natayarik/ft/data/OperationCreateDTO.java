@@ -7,45 +7,8 @@ import java.time.ZonedDateTime;
  * @author Egor Malko
  */
 
-public class OperationCreateDTO {
-
-    private long id;
-    private long accountId;
-    private BigDecimal amount;
-    private ZonedDateTime creationDate;
+public class OperationCreateDTO extends BaseOperationDTO {
     private long categoryId;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public ZonedDateTime getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(ZonedDateTime creationDate) {
-        this.creationDate = creationDate;
-    }
 
     public long getCategoryId() {
         return categoryId;

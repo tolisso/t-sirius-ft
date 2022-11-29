@@ -35,7 +35,7 @@ public class CategoryController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam long userId) {
-        return categoryService.getAll(typeDTO, userId);
+        return categoryService.getAllFull(typeDTO, userId);
     }
 
     @Operation(summary = "Метод для получения категории по id")
