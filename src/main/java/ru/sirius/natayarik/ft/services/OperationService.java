@@ -2,8 +2,7 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.OperationsConverter;
-import ru.sirius.natayarik.ft.data.OperationDTO;
-import ru.sirius.natayarik.ft.entity.OperationEntity;
+import ru.sirius.natayarik.ft.data.OperationCreateDTO;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
 import java.time.ZonedDateTime;
@@ -28,7 +27,7 @@ public class OperationService {
     }
 
 
-    public OperationDTO create(final OperationDTO operation) {
+    public OperationCreateDTO create(final OperationCreateDTO operation) {
         if (operation.getCreationDate() == null) {
             operation.setCreationDate(ZonedDateTime.now());
         }
@@ -36,14 +35,14 @@ public class OperationService {
                 operationRepository.save(operationsConverter.convertToEntity(operation)));
     }
 
-    public List<OperationDTO> getAll(final long accountId) {
+    public List<OperationCreateDTO> getAll(final long accountId) {
         return operationRepository.findAllByAccountOrderByCreationDateDesc(accountService.getAccountById(accountId))
                 .stream()
                 .map(operationsConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public OperationDTO getFromId(final long operationId) {
+    public OperationCreateDTO getFromId(final long operationId) {
         return operationsConverter.convertToDTO(operationRepository.findById(operationId)
                 .orElseThrow(NoSuchElementException::new));
     }
@@ -52,7 +51,7 @@ public class OperationService {
         operationRepository.delete(operationsConverter.convertToEntity(getFromId(operationId)));
     }
 
-    public OperationDTO change(final OperationDTO operation) {
+    public OperationCreateDTO change(final OperationCreateDTO operation) {
         return operationsConverter.convertToDTO(operationRepository.save(operationsConverter.convertToEntity(operation)));
     }
 }

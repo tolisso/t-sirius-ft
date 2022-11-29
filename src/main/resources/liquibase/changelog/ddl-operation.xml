@@ -65,4 +65,8 @@
         </createTable>
         <createSequence sequenceName="operation_seq" startValue="100" incrementBy="1"/>
     </changeSet>
+
+    <changeSet id="create-category-seq" author="yar">
+        <createSequence sequenceName="category_seq" startValue="100" incrementBy="1"/>
+    </changeSet>
 </databaseChangeLog>
