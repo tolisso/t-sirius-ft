@@ -2,16 +2,10 @@ package ru.sirius.natayarik.ft.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.sirius.natayarik.ft.converter.OperationsConverter;
-import ru.sirius.natayarik.ft.data.OperationDTO;
-import ru.sirius.natayarik.ft.entity.OperationEntity;
-import ru.sirius.natayarik.ft.services.AccountService;
-import ru.sirius.natayarik.ft.services.CategoryService;
+import ru.sirius.natayarik.ft.data.OperationCreateDTO;
 import ru.sirius.natayarik.ft.services.OperationService;
-import ru.sirius.natayarik.ft.services.UserService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author Yaroslav Ilin
@@ -29,19 +23,19 @@ public class OperationsController {
 
 
     @PostMapping("/create")
-    public OperationDTO createOperation(@RequestBody OperationDTO operation) {
+    public OperationCreateDTO createOperation(@RequestBody OperationCreateDTO operation) {
         return operationService.create(operation);
     }
 
     @GetMapping("/getAll")
     @ResponseBody
-    public List<OperationDTO> getAllOperations(@RequestParam long accountId) {
+    public List<OperationCreateDTO> getAllOperations(@RequestParam long accountId) {
         return operationService.getAll(accountId);
     }
 
     @GetMapping("/getFromId")
     @ResponseBody
-    public OperationDTO getOperationFromId(@RequestParam int operationId) {
+    public OperationCreateDTO getOperationFromId(@RequestParam int operationId) {
         return operationService.getFromId(operationId);
     }
 
@@ -51,7 +45,7 @@ public class OperationsController {
     }
 
     @PutMapping("/change")
-    public OperationDTO changeOperation(@RequestBody OperationDTO operation) {
+    public OperationCreateDTO changeOperation(@RequestBody OperationCreateDTO operation) {
         return operationService.change(operation);
     }
 }
