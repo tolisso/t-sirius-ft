@@ -12,13 +12,21 @@ import ru.sirius.natayarik.ft.services.UserService;
 
 @Component
 public class OperationsConverter {
-//    private final AccountService accountService;
-//    private final UserService userService;
-    public static OperationDTO convertToDTO(final OperationEntity operationEntity) {
+    private final AccountService accountService;
+    private final UserService userService;
+    private final CategoryConverter categoryConverter;
+
+    public OperationsConverter(AccountService accountService, UserService userService, CategoryConverter categoryConverter) {
+        this.accountService = accountService;
+        this.userService = userService;
+        this.categoryConverter = categoryConverter;
+    }
+
+    public OperationDTO convertToDTO(final OperationEntity operationEntity) {
         OperationDTO result = new OperationDTO();
         result.setAccountId(operationEntity.getAccount().getId());
         result.setAmount(operationEntity.getAmount());
-        result.setCategory(CategoryConverter.convertToDTO(operationEntity.getCategory()));
+        result.setCategory(categoryConverter.convertToDTO(operationEntity.getCategory()));
         //result.setType(operationEntity.getCategory().getType());
         result.setId(operationEntity.getId());
         result.setCreationDate(operationEntity.getCreationDate());
@@ -26,13 +34,12 @@ public class OperationsConverter {
     }
 
 //    TODO: Здесь отвратительная архитектура, надо переделать я думаю!!!!!!!!!!
-    public static OperationEntity convertToEntity(final OperationDTO operationDTO, final AccountService accountService,
-                                                  final UserService userService) {
+    public OperationEntity convertToEntity(final OperationDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
         result.setAccount(accountService.getAccountById(operationDTO.getAccountId()));
         result.setAmount(operationDTO.getAmount());
-        result.setCategory(CategoryConverter.convertToEntity(operationDTO.getCategory(), userService));
+        result.setCategory(categoryConverter.convertToEntity(operationDTO.getCategory()));
         result.setId(operationDTO.getId());
         return result;
     }

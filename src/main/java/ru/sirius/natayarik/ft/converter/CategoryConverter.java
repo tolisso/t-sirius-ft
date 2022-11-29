@@ -1,5 +1,6 @@
 package ru.sirius.natayarik.ft.converter;
 
+import org.springframework.stereotype.Component;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
 import ru.sirius.natayarik.ft.entity.CategoryEntity;
 import ru.sirius.natayarik.ft.services.UserService;
@@ -8,8 +9,15 @@ import ru.sirius.natayarik.ft.services.UserService;
  * @author Yaroslav Ilin
  */
 
+@Component
 public class CategoryConverter {
-    public static CategoryDTO convertToDTO(final CategoryEntity categoryEntity) {
+    private final UserService userService;
+
+    public CategoryConverter(UserService userService) {
+        this.userService = userService;
+    }
+
+    public CategoryDTO convertToDTO(final CategoryEntity categoryEntity) {
         CategoryDTO result = new CategoryDTO();
         result.setId(categoryEntity.getId());
         result.setUserId(categoryEntity.getUser().getId());
@@ -18,7 +26,7 @@ public class CategoryConverter {
         return result;
     }
 
-    public static CategoryEntity convertToEntity(final CategoryDTO categoryDTO, final UserService userService) {
+    public CategoryEntity convertToEntity(final CategoryDTO categoryDTO) {
         CategoryEntity result = new CategoryEntity();
         result.setId(categoryDTO.getId());
         result.setType(categoryDTO.getType());

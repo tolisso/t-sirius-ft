@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 
+import java.util.NoSuchElementException;
+
 /**
  * @author Yaroslav Ilin
  */
@@ -18,6 +20,6 @@ public class AccountService {
     }
 
     public AccountEntity getAccountById(final long id) {
-        return accountRepository.findById(id).orElse(null);
+        return accountRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 }

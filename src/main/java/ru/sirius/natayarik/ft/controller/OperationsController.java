@@ -21,35 +21,28 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/operation/")
 public class OperationsController {
     private final OperationService operationService;
-    private final AccountService accountService;
-    private final UserService userService;
 
     @Autowired
-    public OperationsController(OperationService operationService, AccountService accountService, UserService userService) {
+    public OperationsController(OperationService operationService) {
         this.operationService = operationService;
-        this.accountService = accountService;
-        this.userService = userService;
     }
 
 
     @PostMapping("/create")
     public OperationDTO createOperation(@RequestBody OperationDTO operation) {
-        return OperationsConverter.convertToDTO(
-                operationService.create(
-                        OperationsConverter.convertToEntity(operation, accountService, userService)));
+        return operationService.create(operation);
     }
 
     @GetMapping("/getAll")
     @ResponseBody
     public List<OperationDTO> getAllOperations(@RequestParam long accountId) {
-        List<OperationEntity> result = operationService.getAll(accountId);
-        return result.stream().map(OperationsConverter::convertToDTO).collect(Collectors.toList());
+        return operationService.getAll(accountId);
     }
 
     @GetMapping("/getFromId")
     @ResponseBody
     public OperationDTO getOperationFromId(@RequestParam int operationId) {
-        return OperationsConverter.convertToDTO(operationService.getFromId(operationId));
+        return operationService.getFromId(operationId);
     }
 
     @DeleteMapping("/delete")
@@ -59,8 +52,6 @@ public class OperationsController {
 
     @PutMapping("/change")
     public OperationDTO changeOperation(@RequestBody OperationDTO operation) {
-        return OperationsConverter.convertToDTO(
-                operationService.change(
-                        OperationsConverter.convertToEntity(operation, accountService, userService)));
+        return operationService.change(operation);
     }
 }
