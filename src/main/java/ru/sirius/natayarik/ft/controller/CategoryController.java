@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
-import ru.sirius.natayarik.ft.services.CategoryServices;
+import ru.sirius.natayarik.ft.services.CategoryService;
 
 import java.util.List;
 
@@ -15,38 +15,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/category/")
 public class CategoryController {
-    private final CategoryServices categoryServices;
+    private final CategoryService categoryService;
 
     @Autowired
-    public CategoryController(CategoryServices categoryServices) {
-        this.categoryServices = categoryServices;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
 
     @PostMapping("/create")
-    public CategoryDTO createCategory(@RequestParam CategoryDTO category) {
-        return categoryServices.create(category);
+    public CategoryDTO createCategory(@RequestBody CategoryDTO category) {
+        return categoryService.create(category);
     }
 
     @GetMapping("/getAll")
     @ResponseBody
     public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO) {
-        return categoryServices.getAll(typeDTO);
+        return categoryService.getAll(typeDTO);
     }
 
     @GetMapping("/getFromId")
     @ResponseBody
     public CategoryDTO getCategoryFromId(@RequestParam int categoryId) {
-        return categoryServices.getFromId(categoryId);
+        return categoryService.getFromId(categoryId);
     }
 
     @DeleteMapping("/delete")
     public void deleteCategory(@RequestParam int categoryId) {
-        categoryServices.delete(categoryId);
+        categoryService.delete(categoryId);
     }
 
     @PutMapping("/change")
-    public CategoryDTO changeCategory(@RequestParam CategoryDTO category) {
-        return categoryServices.change(category);
+    public CategoryDTO changeCategory(@RequestBody CategoryDTO category) {
+        return categoryService.change(category);
     }
 }

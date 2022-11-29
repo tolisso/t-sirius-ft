@@ -1,7 +1,10 @@
 package ru.sirius.natayarik.ft.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 
 /**
  * @author Egor Malko
@@ -23,6 +26,18 @@ public class OperationEntity {
    @ManyToOne
    @JoinColumn(name = "category_id")
    private CategoryEntity categoryEntity;
+
+   @CreationTimestamp
+   @Column(name = "date")
+   private ZonedDateTime creationDate;
+
+   public ZonedDateTime getCreationDate() {
+      return creationDate;
+   }
+
+   public void setCreationDate(ZonedDateTime creationDate) {
+      this.creationDate = creationDate;
+   }
 
    public long getId() {
       return id;
