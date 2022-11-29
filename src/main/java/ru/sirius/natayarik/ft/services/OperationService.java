@@ -2,6 +2,7 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.OperationsConverter;
+import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.OperationCreateDTO;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
@@ -31,27 +32,27 @@ public class OperationService {
         if (operation.getCreationDate() == null) {
             operation.setCreationDate(ZonedDateTime.now());
         }
-        return operationsConverter.convertToDTO(
-                operationRepository.save(operationsConverter.convertToEntity(operation)));
+        return operationsConverter.convertToCreateDTO(
+                operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
     }
 
-    public List<OperationCreateDTO> getAll(final long accountId) {
+    public List<FullOperationDTO> getAll(final long accountId) {
         return operationRepository.findAllByAccountOrderByCreationDateDesc(accountService.getAccountById(accountId))
                 .stream()
-                .map(operationsConverter::convertToDTO)
+                .map(operationsConverter::convertToFullDTO)
                 .collect(Collectors.toList());
     }
 
-    public OperationCreateDTO getFromId(final long operationId) {
-        return operationsConverter.convertToDTO(operationRepository.findById(operationId)
+    public FullOperationDTO getFromId(final long operationId) {
+        return operationsConverter.convertToFullDTO(operationRepository.findById(operationId)
                 .orElseThrow(NoSuchElementException::new));
     }
 
     public void delete(final int operationId) {
-        operationRepository.delete(operationsConverter.convertToEntity(getFromId(operationId)));
+        operationRepository.delete(operationsConverter.convertToEntityFromFullDTO(getFromId(operationId)));
     }
 
     public OperationCreateDTO change(final OperationCreateDTO operation) {
-        return operationsConverter.convertToDTO(operationRepository.save(operationsConverter.convertToEntity(operation)));
+        return operationsConverter.convertToCreateDTO(operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
     }
 }
