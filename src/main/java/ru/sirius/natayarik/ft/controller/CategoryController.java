@@ -24,7 +24,7 @@ public class CategoryController {
 
 
     @PostMapping("/create")
-    public CategoryDTO createCategory(@RequestParam CategoryDTO category) {
+    public CategoryDTO createCategory(@RequestBody CategoryDTO category) {
         return categoryService.create(category);
     }
 
@@ -46,7 +46,7 @@ public class CategoryController {
     }
 
     @PutMapping("/change")
-    public CategoryDTO changeCategory(@RequestParam CategoryDTO category) {
+    public CategoryDTO changeCategory(@RequestBody CategoryDTO category) {
         return categoryService.change(category);
     }
 }
