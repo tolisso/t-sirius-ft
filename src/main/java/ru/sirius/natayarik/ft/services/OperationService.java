@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.OperationsConverter;
 import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.OperationCreateDTO;
+import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
 import java.time.ZonedDateTime;
@@ -18,12 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class OperationService {
     private final OperationRepository operationRepository;
-    private final AccountService accountService;
+    private final AccountRepository accountRepository;
     private final OperationsConverter operationsConverter;
 
-    public OperationService(OperationRepository operationRepository, AccountService accountService, OperationsConverter operationsConverter) {
+    public OperationService(OperationRepository operationRepository, AccountRepository accountRepository, OperationsConverter operationsConverter) {
         this.operationRepository = operationRepository;
-        this.accountService = accountService;
+        this.accountRepository = accountRepository;
         this.operationsConverter = operationsConverter;
     }
 

@@ -13,7 +13,7 @@ public class AccountDTO extends BaseDTO {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 
