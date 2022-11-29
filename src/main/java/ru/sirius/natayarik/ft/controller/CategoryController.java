@@ -30,8 +30,8 @@ public class CategoryController {
 
     @GetMapping("/getAll")
     @ResponseBody
-    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO) {
-        return categoryService.getAll(typeDTO);
+    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam long userId) {
+        return categoryService.getAll(typeDTO, userId);
     }
 
     @GetMapping("/getFromId")

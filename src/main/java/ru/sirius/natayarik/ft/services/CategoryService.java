@@ -29,20 +29,20 @@ public class CategoryService {
       return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
    }
 
-   public List<CategoryDTO> getAll(TypeDTO typeDTO) {
+   public List<CategoryDTO> getAll(TypeDTO typeDTO, long userId) {
         /*return List.of(new CategoryDTO(0, 0, "Salary", TypeDTO.INCOME),
                 new CategoryDTO(1, 228, "Gift", TypeDTO.OUTCOME),
                 new CategoryDTO(2, 123, "Medicine", TypeDTO.OUTCOME));*/
-      return categoryRepository.findAllByTypeDTO(typeDTO).stream().map(categoryConverter::convertToDTO).collect(Collectors.toList());
+      return categoryRepository.findAllByTypeDTOAndUser(typeDTO, userService.getUserFromId(userId)).stream().map(categoryConverter::convertToDTO).collect(Collectors.toList());
    }
 
    public CategoryDTO getFromId(long categoryId) {
       //return new CategoryDTO(categoryId, 324124, "KEKLOL", TypeDTO.INCOME);
-      return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElse(null));
+      return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
    }
 
    public void delete(long categoryId) {
-      categoryRepository.delete(categoryRepository.findById(categoryId).orElse(null));
+      categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
    }
 
    public CategoryDTO change(CategoryDTO category) {
