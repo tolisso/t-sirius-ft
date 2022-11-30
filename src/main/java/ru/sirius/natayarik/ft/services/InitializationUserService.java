@@ -11,6 +11,7 @@ import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class InitializationUserService {
         this.categoryRepository = categoryRepository;
     }
 
+    @Transactional
     public UserEntity initializationUser(UserDTO userDTO) {
         UserEntity userEntity = userConverter.convertToEntity(userDTO);
         UserEntity user = userRepository.findByName(userEntity.getName());
