@@ -69,4 +69,10 @@
     <changeSet id="create-category-seq" author="yar">
         <createSequence sequenceName="category_seq" startValue="100" incrementBy="1"/>
     </changeSet>
+    
+    <changeSet id="create-user-create-index" author="yar">
+        <createIndex tableName="users" indexName="user_id_index" unique="true">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
