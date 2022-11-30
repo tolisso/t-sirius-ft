@@ -59,9 +59,18 @@ public class InitializationUserService {
 
     private void createDefaultCategories(UserEntity userEntity) {
         if (categoryRepository.findAllByUser(userEntity).isEmpty()) {
-            CategoryEntity category1 = new CategoryEntity(userEntity, "Зарплата", TypeDTO.INCOME);
-            categoryRepository.save(category1);
+            saveCategory(userEntity, "Зарплата", TypeDTO.INCOME);
+            saveCategory(userEntity, "Подработка", TypeDTO.INCOME);
+            saveCategory(userEntity, "Подарок", TypeDTO.INCOME);
+            saveCategory(userEntity, "Капитализация", TypeDTO.INCOME);
+            saveCategory(userEntity, "Супермаркеты", TypeDTO.OUTCOME);
+            saveCategory(userEntity, "Переводы", TypeDTO.OUTCOME);
+            saveCategory(userEntity, "Транспорт", TypeDTO.OUTCOME);
+            saveCategory(userEntity, "Другое", TypeDTO.OUTCOME);
         }
     }
 
+    private void saveCategory(UserEntity userEntity, String name, TypeDTO typeDTO) {
+        categoryRepository.save(new CategoryEntity(userEntity, name, typeDTO));
+    }
 }
