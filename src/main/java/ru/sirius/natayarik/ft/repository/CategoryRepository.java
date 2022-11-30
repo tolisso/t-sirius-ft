@@ -12,4 +12,6 @@ import java.util.List;
  */
 public interface CategoryRepository extends CrudRepository<CategoryEntity, Long> {
     List<CategoryEntity> findAllByTypeDTOAndUser(TypeDTO typeDTO, UserEntity user);
+
+    List<CategoryEntity> findAllByUser(UserEntity userEntity);
 }

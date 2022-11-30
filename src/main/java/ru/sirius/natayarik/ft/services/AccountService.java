@@ -39,16 +39,11 @@ public class AccountService {
     }
 
     public List<AccountDTO> getAll() {
-        List<AccountDTO> result = accountRepository
-                .findAllByUser(userService.getUserFromId(currentUserService.getUser().getId()))
+        return accountRepository
+                .findAllByUser(currentUserService.getUser())
                 .stream()
                 .map(accountConverter::convertToDTO)
                 .collect(Collectors.toList());
-        if (result.isEmpty()) {
-            return List.of(accountConverter.convertToDTO(createDefaultAccount()));
-        } else {
-            return result;
-        }
     }
 
     public void delete(long accountId) {
@@ -57,13 +52,5 @@ public class AccountService {
 
     public AccountDTO change(final AccountDTO accountDTO) {
         return accountConverter.convertToDTO(accountRepository.save(accountConverter.convertToEntity(accountDTO)));
-    }
-
-    public AccountEntity createDefaultAccount() {
-        AccountEntity account = new AccountEntity();
-        account.setBalance(new BigDecimal(0));
-        account.setName("Кошелек 1");
-        account.setUser(currentUserService.getUser());
-        return accountRepository.save(account);
     }
 }

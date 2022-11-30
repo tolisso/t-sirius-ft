@@ -16,55 +16,42 @@ import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
-   private final CategoryRepository categoryRepository;
-   private final UserService userService;
-   private final CategoryConverter categoryConverter;
-   private final CurrentUserService currentUserService;
+    private final CategoryRepository categoryRepository;
+    private final UserService userService;
+    private final CategoryConverter categoryConverter;
+    private final CurrentUserService currentUserService;
 
-   public CategoryService(CategoryRepository categoryRepository, UserService userService, CategoryConverter categoryConverter, CurrentUserService currentUserService) {
-      this.categoryRepository = categoryRepository;
-      this.userService = userService;
-      this.categoryConverter = categoryConverter;
-      this.currentUserService = currentUserService;
-   }
+    public CategoryService(CategoryRepository categoryRepository, UserService userService, CategoryConverter categoryConverter, CurrentUserService currentUserService) {
+        this.categoryRepository = categoryRepository;
+        this.userService = userService;
+        this.categoryConverter = categoryConverter;
+        this.currentUserService = currentUserService;
+    }
 
-   public CategoryDTO create(CategoryDTO category) {
-      return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
-   }
+    public CategoryDTO create(CategoryDTO category) {
+        return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
+    }
 
-   public List<CategoryDTO> getAll(TypeDTO typeDTO) {
-      List<CategoryDTO> result = categoryRepository
-              .findAllByTypeDTOAndUser(
-                      typeDTO, userService.getUserFromId(currentUserService.getUser().getId()))
-              .stream()
-              .map(categoryConverter::convertToDTO)
-              .collect(Collectors.toList());
-      if (result.isEmpty()) {
-         return createDefaultCategories()
-                 .stream()
-                 .map(categoryConverter::convertToDTO)
-                 .collect(Collectors.toList());
-      } else {
-         return result;
-      }
-   }
+    public List<CategoryDTO> getAll(TypeDTO typeDTO) {
+       return categoryRepository
+               .findAllByTypeDTOAndUser(
+                       typeDTO, userService.getUserFromId(currentUserService.getUser().getId()))
+               .stream()
+               .map(categoryConverter::convertToDTO)
+               .collect(Collectors.toList());
 
-   private List<CategoryEntity> createDefaultCategories() {
-      CategoryEntity category1 = new CategoryEntity(currentUserService.getUser(), "Зарплата", TypeDTO.INCOME);
-      categoryRepository.save(category1);
-      return List.of(category1);
-   }
+    }
 
-   public CategoryDTO getFromId(long categoryId) {
-      return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
-   }
+    public CategoryDTO getFromId(long categoryId) {
+        return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
+    }
 
-   public void delete(long categoryId) {
-      categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
-   }
+    public void delete(long categoryId) {
+        categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
+    }
 
-   public CategoryDTO change(CategoryDTO category) {
-      return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
-   }
+    public CategoryDTO change(CategoryDTO category) {
+        return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
+    }
 }
 

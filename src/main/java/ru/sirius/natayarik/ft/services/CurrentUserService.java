@@ -1,29 +1,29 @@
 package ru.sirius.natayarik.ft.services;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.annotation.RequestScope;
+import ru.sirius.natayarik.ft.data.UserDTO;
 import ru.sirius.natayarik.ft.entity.UserEntity;
-import ru.sirius.natayarik.ft.repository.UserRepository;
 
 /**
  * @author Yaroslav Ilin
  */
 
 @Component
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+@RequestScope
 public class CurrentUserService {
     private UserEntity user;
-    private final UserRepository userRepository;
+    private final InitializationUserService initializationUserService;
 
-    public CurrentUserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CurrentUserService(InitializationUserService initializationUserService) {
+        this.initializationUserService = initializationUserService;
     }
 
+
     public void setUser(final String name) {
-        user = userRepository.findByName(name);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(name);
+        user = initializationUserService.initializationUser(userDTO);
     }
 
     public UserEntity getUser() {
