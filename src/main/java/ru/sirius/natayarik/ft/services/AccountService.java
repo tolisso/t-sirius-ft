@@ -6,6 +6,7 @@ import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -19,12 +20,14 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final AccountConverter accountConverter;
     private final UserService userService;
+    private final CurrentUserService currentUserService;
 
 
-    public AccountService(AccountRepository accountRepository, AccountConverter accountConverter, UserService userService) {
+    public AccountService(AccountRepository accountRepository, AccountConverter accountConverter, UserService userService, CurrentUserService currentUserService) {
         this.accountRepository = accountRepository;
         this.accountConverter = accountConverter;
         this.userService = userService;
+        this.currentUserService = currentUserService;
     }
 
     public AccountDTO getAccountById(final long id) {
@@ -35,8 +38,12 @@ public class AccountService {
         return accountConverter.convertToDTO(accountRepository.save(accountConverter.convertToEntity(accountDTO)));
     }
 
-    public List<AccountDTO> getAll(long userId) {
-        return accountRepository.findAllByUser(userService.getUserFromId(userId)).stream().map(accountConverter::convertToDTO).collect(Collectors.toList());
+    public List<AccountDTO> getAll() {
+        return accountRepository
+                .findAllByUser(currentUserService.getUser())
+                .stream()
+                .map(accountConverter::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public void delete(long accountId) {

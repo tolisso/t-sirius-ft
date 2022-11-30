@@ -7,6 +7,8 @@ import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 
+import javax.transaction.Transactional;
+
 /**
  * @author Yaroslav Ilin
  */
@@ -43,6 +45,7 @@ public class OperationsConverter {
         return result;
     }
 
+    @Transactional
     public OperationEntity convertToEntityFromCreateDTO(final OperationCreateDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
@@ -53,6 +56,7 @@ public class OperationsConverter {
         return result;
     }
 
+    @Transactional
     public OperationEntity convertToEntityFromFullDTO(final FullOperationDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());

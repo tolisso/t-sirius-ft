@@ -38,7 +38,11 @@ public class OperationService {
     }
 
     public List<FullOperationDTO> getAll(final long accountId) {
-        return operationRepository.findAllByAccountOrderByCreationDateDesc(accountService.getAccountById(accountId))
+        return operationRepository
+                .findAllByAccountOrderByCreationDateDesc(
+                        accountRepository
+                                .findById(accountId)
+                                .orElseThrow(() -> new RuntimeException("Don't find account by id.")))
                 .stream()
                 .map(operationsConverter::convertToFullDTO)
                 .collect(Collectors.toList());

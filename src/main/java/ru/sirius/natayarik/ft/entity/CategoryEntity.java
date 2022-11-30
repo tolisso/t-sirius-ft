@@ -25,6 +25,16 @@ public class CategoryEntity {
    @Column(name = "type")
    private TypeDTO typeDTO;
 
+   public CategoryEntity() {
+
+   }
+
+   public CategoryEntity(UserEntity user, String name, TypeDTO typeDTO) {
+      this.user = user;
+      this.name = name;
+      this.typeDTO = typeDTO;
+   }
+
    public long getId() {
       return id;
    }
