@@ -1,5 +1,7 @@
 package ru.sirius.natayarik.ft.data;
 
+import java.math.BigDecimal;
+
 /**
  * @author Egor Malko
  */
