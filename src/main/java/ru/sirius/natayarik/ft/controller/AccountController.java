@@ -13,7 +13,7 @@ import java.util.List;
  * @author Egor Malko
  */
 @RestController
-@RequestMapping("/api/accounts/")
+@RequestMapping("/api/accounts")
 public class AccountController {
     private final AccountService accountService;
 
@@ -42,7 +42,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Метод для удаления кошелька по id")
-    @DeleteMapping(value="/{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteAccount(@PathVariable("id") long accountId) {
         accountService.delete(accountId);
     }
