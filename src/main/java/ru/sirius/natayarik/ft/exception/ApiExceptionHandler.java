@@ -18,6 +18,9 @@ import ru.sirius.natayarik.ft.data.ApiErrorResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+@ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
+@ResponseBody
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundDataException.class})
