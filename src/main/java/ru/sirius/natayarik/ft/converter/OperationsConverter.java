@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.OperationCreateDTO;
 import ru.sirius.natayarik.ft.entity.OperationEntity;
+import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 
@@ -49,9 +50,9 @@ public class OperationsConverter {
     public OperationEntity convertToEntityFromCreateDTO(final OperationCreateDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
-        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new RuntimeException("Not found account by ID")));
+        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
         result.setAmount(operationDTO.getAmount());
-        result.setCategory(categoryRepository.findById(operationDTO.getCategoryId()).orElseThrow(() -> new RuntimeException("Not found category by ID")));
+        result.setCategory(categoryRepository.findById(operationDTO.getCategoryId()).orElseThrow(() -> new NotFoundDataException("Not found category by ID")));
         result.setId(operationDTO.getId());
         return result;
     }
@@ -60,7 +61,7 @@ public class OperationsConverter {
     public OperationEntity convertToEntityFromFullDTO(final FullOperationDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
-        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new RuntimeException("Not found account by ID")));
+        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
         result.setAmount(operationDTO.getAmount());
         result.setCategory(categoryConverter.convertToEntity(operationDTO.getCategoryDTO()));
         result.setId(operationDTO.getId());

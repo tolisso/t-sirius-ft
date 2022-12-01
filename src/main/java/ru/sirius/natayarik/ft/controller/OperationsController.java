@@ -15,7 +15,7 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api/operations/")
+@RequestMapping("/api/operations")
 public class OperationsController {
     private final OperationService operationService;
 

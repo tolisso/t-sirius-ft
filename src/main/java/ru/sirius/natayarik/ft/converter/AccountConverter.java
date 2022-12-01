@@ -5,6 +5,7 @@ import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.data.CurrencyDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
+import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.UserRepository;
 import ru.sirius.natayarik.ft.services.AccountBalanceService;
 import ru.sirius.natayarik.ft.services.AccountService;
@@ -39,8 +40,7 @@ public class AccountConverter {
         AccountEntity result = new AccountEntity();
         result.setId(accountDTO.getId());
         result.setName(accountDTO.getName());
-        result.setUser(userRepository.findById(accountDTO.getUserId()).orElseThrow(() -> new RuntimeException("not found user by id " + accountDTO.getUserId())));
-        result.setBalance(accountDTO.getBalance());
+        result.setUser(userRepository.findById(accountDTO.getUserId()).orElseThrow(() -> new NotFoundDataException("not found user by id " + accountDTO.getUserId())));//TODO разобраться с currency и balance
         return result;
     }
 }
