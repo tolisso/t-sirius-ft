@@ -7,6 +7,7 @@ import ru.sirius.natayarik.ft.data.OperationCreateDTO;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
+import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -30,7 +31,7 @@ public class OperationService {
         this.accountBalanceService = accountBalanceService;
     }
 
-
+    @Transactional
     public OperationCreateDTO create(final OperationCreateDTO operation) {
         if (operation.getCreationDate() == null) {
             operation.setCreationDate(ZonedDateTime.now());
@@ -57,11 +58,14 @@ public class OperationService {
                 .orElseThrow(NoSuchElementException::new));
     }
 
-    public void delete(final int operationId) {
+    @Transactional
+    public void delete(final long operationId) {
+        long accountId = getFromId(operationId).getAccountId();
         operationRepository.delete(operationsConverter.convertToEntityFromFullDTO(getFromId(operationId)));
-        accountBalanceService.updateBalance(getFromId(operationId).getAccountId());
+        accountBalanceService.updateBalance(accountId);
     }
 
+    @Transactional
     public OperationCreateDTO change(final OperationCreateDTO operation) {
         OperationCreateDTO result = operationsConverter.convertToCreateDTO(operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
         accountBalanceService.updateBalance(operation.getAccountId());

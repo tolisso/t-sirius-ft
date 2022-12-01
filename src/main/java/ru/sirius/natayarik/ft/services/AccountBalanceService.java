@@ -32,9 +32,8 @@ public class AccountBalanceService {
     }
 
     public void updateBalance(long accountId) {
-        BigDecimal balance = getSumByType(accountId, TypeDTO.INCOME).subtract(getSumByType(accountId, TypeDTO.OUTCOME));
         AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Don't find account by id"));
-        account.setBalance(balance.compareTo(new BigDecimal(0)) > 0 ? balance : new BigDecimal(0));
+        account.setBalance(getSumByType(accountId, TypeDTO.INCOME).subtract(getSumByType(accountId, TypeDTO.OUTCOME)));
         accountRepository.save(account);
     }
 }
