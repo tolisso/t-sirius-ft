@@ -8,6 +8,7 @@ import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
+import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,20 +23,24 @@ public class OperationService {
     private final OperationRepository operationRepository;
     private final AccountRepository accountRepository;
     private final OperationsConverter operationsConverter;
+    private final AccountBalanceService accountBalanceService;
 
-    public OperationService(OperationRepository operationRepository, AccountRepository accountRepository, OperationsConverter operationsConverter) {
+    public OperationService(OperationRepository operationRepository, AccountRepository accountRepository, OperationsConverter operationsConverter, AccountBalanceService accountBalanceService) {
         this.operationRepository = operationRepository;
         this.accountRepository = accountRepository;
         this.operationsConverter = operationsConverter;
+        this.accountBalanceService = accountBalanceService;
     }
 
-
+    @Transactional
     public OperationCreateDTO create(final OperationCreateDTO operation) {
         if (operation.getCreationDate() == null) {
             operation.setCreationDate(ZonedDateTime.now());
         }
-        return operationsConverter.convertToCreateDTO(
+        OperationCreateDTO result = operationsConverter.convertToCreateDTO(
                 operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
+        accountBalanceService.updateBalance(operation.getAccountId());
+        return result;
     }
 
     public List<FullOperationDTO> getAll(final long accountId) {
@@ -54,11 +59,17 @@ public class OperationService {
                 .orElseThrow(NoSuchElementException::new));
     }
 
-    public void delete(final int operationId) {
+    @Transactional
+    public void delete(final long operationId) {
+        long accountId = getFromId(operationId).getAccountId();
         operationRepository.delete(operationsConverter.convertToEntityFromFullDTO(getFromId(operationId)));
+        accountBalanceService.updateBalance(accountId);
     }
 
+    @Transactional
     public OperationCreateDTO change(final OperationCreateDTO operation) {
-        return operationsConverter.convertToCreateDTO(operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
+        OperationCreateDTO result = operationsConverter.convertToCreateDTO(operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
+        accountBalanceService.updateBalance(operation.getAccountId());
+        return result;
     }
 }

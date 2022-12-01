@@ -12,4 +12,5 @@ import java.util.List;
 
 public interface OperationRepository extends CrudRepository<OperationEntity, Long> {
     List<OperationEntity> findAllByAccountOrderByCreationDateDesc(AccountEntity account);
+    List<OperationEntity> findAllByAccount(AccountEntity account);
 }
