@@ -10,6 +10,9 @@ public class AccountDTO extends BaseDTO {
     private long userId;
     private String name;
     private CurrencyDTO currency;
+    private BigDecimal balance;
+    private BigDecimal income;
+    private BigDecimal outcome;
 
     public long getUserId() {
         return userId;
@@ -33,5 +36,29 @@ public class AccountDTO extends BaseDTO {
 
     public void setCurrency(CurrencyDTO currency) {
         this.currency = currency;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public BigDecimal getIncome() {
+        return income;
+    }
+
+    public void setIncome(BigDecimal income) {
+        this.income = income;
+    }
+
+    public BigDecimal getOutcome() {
+        return outcome;
+    }
+
+    public void setOutcome(BigDecimal outcome) {
+        this.outcome = outcome;
     }
 }

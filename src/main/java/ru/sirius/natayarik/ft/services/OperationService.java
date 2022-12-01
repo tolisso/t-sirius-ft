@@ -21,11 +21,13 @@ public class OperationService {
     private final OperationRepository operationRepository;
     private final AccountRepository accountRepository;
     private final OperationsConverter operationsConverter;
+    private final AccountBalanceService accountBalanceService;
 
-    public OperationService(OperationRepository operationRepository, AccountRepository accountRepository, OperationsConverter operationsConverter) {
+    public OperationService(OperationRepository operationRepository, AccountRepository accountRepository, OperationsConverter operationsConverter, AccountBalanceService accountBalanceService) {
         this.operationRepository = operationRepository;
         this.accountRepository = accountRepository;
         this.operationsConverter = operationsConverter;
+        this.accountBalanceService = accountBalanceService;
     }
 
 
@@ -33,8 +35,10 @@ public class OperationService {
         if (operation.getCreationDate() == null) {
             operation.setCreationDate(ZonedDateTime.now());
         }
-        return operationsConverter.convertToCreateDTO(
+        OperationCreateDTO result = operationsConverter.convertToCreateDTO(
                 operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
+        accountBalanceService.updateBalance(operation.getAccountId());
+        return result;
     }
 
     public List<FullOperationDTO> getAll(final long accountId) {
@@ -55,9 +59,12 @@ public class OperationService {
 
     public void delete(final int operationId) {
         operationRepository.delete(operationsConverter.convertToEntityFromFullDTO(getFromId(operationId)));
+        accountBalanceService.updateBalance(getFromId(operationId).getAccountId());
     }
 
     public OperationCreateDTO change(final OperationCreateDTO operation) {
-        return operationsConverter.convertToCreateDTO(operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
+        OperationCreateDTO result = operationsConverter.convertToCreateDTO(operationRepository.save(operationsConverter.convertToEntityFromCreateDTO(operation)));
+        accountBalanceService.updateBalance(operation.getAccountId());
+        return result;
     }
 }
