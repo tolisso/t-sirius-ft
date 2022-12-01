@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.OperationsConverter;
 import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.OperationCreateDTO;
+import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
@@ -42,7 +43,7 @@ public class OperationService {
                 .findAllByAccountOrderByCreationDateDesc(
                         accountRepository
                                 .findById(accountId)
-                                .orElseThrow(() -> new RuntimeException("Don't find account by id.")))
+                                .orElseThrow(() -> new NotFoundDataException("Don't find account.")))
                 .stream()
                 .map(operationsConverter::convertToFullDTO)
                 .collect(Collectors.toList());

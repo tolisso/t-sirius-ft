@@ -14,7 +14,7 @@ import java.time.ZonedDateTime;
 public class BaseOperationDTO extends BaseDTO{
     @Schema(description = "Id кошелька с которого происходит операция")
     protected long accountId;
-//    @Min(value = 0, message = "Amount cannot be less than 0") TODO
+    @Min(value = 0, message = "Amount cannot be less than 0") // TODO
     @Schema(description = "Сумма")
     protected BigDecimal amount;
     @Schema(description = "Дата операции, если нет, то будет задана текущая")
