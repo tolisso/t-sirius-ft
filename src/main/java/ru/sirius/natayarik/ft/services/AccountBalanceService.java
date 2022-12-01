@@ -23,7 +23,7 @@ public class AccountBalanceService {
     }
 
     public BigDecimal getSumByType(long accountId, TypeDTO type) {
-        return operationRepository.findAllByAccountOrderByCreationDateDesc(accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Don't find account by id")))
+        return operationRepository.findAllByAccount(accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Don't find account by id")))
                 .stream()
                 .filter((operation) -> operation.getCategory().getType() == type)
                 .map((OperationEntity::getAmount))
@@ -32,7 +32,7 @@ public class AccountBalanceService {
     }
 
     public void updateBalance(long accountId) {
-        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Don't find account by id"));
+        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Don't find account by id"));
         account.setBalance(getSumByType(accountId, TypeDTO.INCOME).subtract(getSumByType(accountId, TypeDTO.OUTCOME)));
         accountRepository.save(account);
     }
