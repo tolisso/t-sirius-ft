@@ -61,7 +61,7 @@ public class OperationsConverter {
     public OperationEntity convertToEntityFromFullDTO(final FullOperationDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
-        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new RuntimeException("Not found account by ID")));
+        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
         result.setAmount(operationDTO.getAmount());
         result.setCategory(categoryConverter.convertToEntity(operationDTO.getCategoryDTO()));
         result.setId(operationDTO.getId());
