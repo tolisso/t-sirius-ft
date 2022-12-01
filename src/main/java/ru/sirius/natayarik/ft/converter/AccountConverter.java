@@ -5,9 +5,10 @@ import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.data.CurrencyDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
+import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.UserRepository;
 import ru.sirius.natayarik.ft.services.AccountBalanceService;
-import ru.sirius.natayarik.ft.services.AccountService;
+
 
 /**
  * @author Egor Malko

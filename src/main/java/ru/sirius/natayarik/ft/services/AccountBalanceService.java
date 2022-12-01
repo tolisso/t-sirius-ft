@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.OperationEntity;
+import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
