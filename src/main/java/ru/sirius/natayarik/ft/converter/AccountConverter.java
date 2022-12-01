@@ -39,7 +39,7 @@ public class AccountConverter {
         AccountEntity result = new AccountEntity();
         result.setId(accountDTO.getId());
         result.setName(accountDTO.getName());
-        result.setUser(userRepository.findById(accountDTO.getUserId()).orElseThrow(() -> new RuntimeException("not found user by id " + accountDTO.getUserId())));
+        result.setUser(userRepository.findById(accountDTO.getUserId()).orElseThrow(() -> new NotFoundDataException("not found user by id " + accountDTO.getUserId())));
         result.setBalance(accountDTO.getBalance());
         return result;
     }
