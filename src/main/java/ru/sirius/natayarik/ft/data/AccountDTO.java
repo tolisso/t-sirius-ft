@@ -1,14 +1,21 @@
 package ru.sirius.natayarik.ft.data;
 
-import java.math.BigDecimal;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author Egor Malko
  */
 
 public class AccountDTO extends BaseDTO {
+    @Schema(description = "Id пользователя - владельца кошелька")
     private long userId;
+    @NotBlank
+    @Schema(description = "Имя кошелька")
     private String name;
+    @Schema(description = "Валюта") // Не на что не влияет сейчас!
     private CurrencyDTO currency;
     private BigDecimal balance;
     private BigDecimal income;

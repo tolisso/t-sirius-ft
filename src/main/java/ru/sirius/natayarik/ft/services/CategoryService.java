@@ -5,6 +5,7 @@ import ru.sirius.natayarik.ft.converter.CategoryConverter;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.entity.CategoryEntity;
+import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 
 import java.util.List;
@@ -43,11 +44,11 @@ public class CategoryService {
     }
 
     public CategoryDTO getFromId(long categoryId) {
-        return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
+        return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundDataException("Not found category")));
     }
 
     public void delete(long categoryId) {
-        categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("not found category by id")));
+        categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundDataException("Not found category")));
     }
 
     public CategoryDTO change(CategoryDTO category) {

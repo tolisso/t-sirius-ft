@@ -1,12 +1,22 @@
 package ru.sirius.natayarik.ft.data;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Yaroslav Ilin
  */
 
 public class CategoryDTO extends BaseDTO {
+    @Schema(description = "Id пользователя")
     private long userId;
+    @NotBlank
+    @Schema(description = "Имя пользователя")
     private String name;
+    @NotNull
+    @Schema(description = "Тип операции(Доход/Расход)")
     private TypeDTO typeDTO;
 
     public CategoryDTO() {
