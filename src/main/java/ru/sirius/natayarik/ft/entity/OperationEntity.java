@@ -27,7 +27,6 @@ public class OperationEntity {
    @JoinColumn(name = "category_id")
    private CategoryEntity categoryEntity;
 
-   @CreationTimestamp
    @Column(name = "date")
    private ZonedDateTime creationDate;
 
