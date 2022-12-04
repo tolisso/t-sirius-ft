@@ -69,10 +69,34 @@
     <changeSet id="create-category-seq" author="yar">
         <createSequence sequenceName="category_seq" startValue="100" incrementBy="1"/>
     </changeSet>
-    
+
     <changeSet id="create-user-create-index" author="yar">
         <createIndex tableName="users" indexName="user_id_index" unique="true">
             <column name="name"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="create_mapping_account_to_user" author="yar">
+        <createTable tableName="user_to_account">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="mapping_account_to_user_user_id_fk"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="account_id" type="bigint">
+                <constraints foreignKeyName="mapping_account_to_user_account_id_fk"
+                             referencedTableName="accounts"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="role" type="varchar(255)"/>
+        </createTable>
+        <createSequence sequenceName="user_to_account_seq" startValue="100" incrementBy="1"/>
+        <createIndex tableName="user_to_account" indexName="user_account_ids_index" unique="true">
+            <column name="user_id"/>
+            <column name="account_id"/>
         </createIndex>
     </changeSet>
 </databaseChangeLog>

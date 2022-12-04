@@ -2,18 +2,20 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.UserConverter;
+import ru.sirius.natayarik.ft.data.RoleDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.data.UserDTO;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.CategoryEntity;
 import ru.sirius.natayarik.ft.entity.UserEntity;
+import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
+import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author Yaroslav Ilin
@@ -25,16 +27,19 @@ public class InitializationUserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final CategoryRepository categoryRepository;
+    private final UserToAccountRepository userToAccountRepository;
 
     public InitializationUserService(
             AccountRepository accountRepository,
             UserRepository userRepository,
             UserConverter userConverter,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository,
+            UserToAccountRepository userToAccountRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.categoryRepository = categoryRepository;
+        this.userToAccountRepository = userToAccountRepository;
     }
 
     @Transactional
@@ -56,6 +61,7 @@ public class InitializationUserService {
             account.setName("Кошелек 1");
             account.setUser(userEntity);
             accountRepository.save(account);
+            userToAccountRepository.save(new UserToAccountEntity(userEntity, account, RoleDTO.OWNER));
         }
     }
 
