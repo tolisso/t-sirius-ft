@@ -75,4 +75,13 @@
             <column name="name"/>
         </createIndex>
     </changeSet>
+
+    <!--<changeSet id="create-telegram-user" author="nata">
+        <createTable tableName="telegram_users">
+            <column name="user_id" type="int">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="state" type="varchar(255)"/>
+        </createTable>
+    </changeSet>-->
 </databaseChangeLog>

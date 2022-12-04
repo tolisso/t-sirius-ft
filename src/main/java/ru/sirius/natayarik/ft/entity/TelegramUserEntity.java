@@ -12,17 +12,25 @@ import javax.persistence.*;
 public class TelegramUserEntity {
     @Id
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private int userId;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "state")
     private BotState state;
 
-    public Long getUserId() {
+    public TelegramUserEntity() {
+
+    }
+
+    public TelegramUserEntity(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
