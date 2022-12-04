@@ -4,10 +4,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
-import ru.sirius.natayarik.ft.cache.OperationCash;
 import ru.sirius.natayarik.ft.cache.StateCash;
-import ru.sirius.natayarik.ft.services.MainMenuService;
+import ru.sirius.natayarik.ft.services.MessageMenuService;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,34 +16,43 @@ import java.util.List;
  */
 @Component
 public class MenuHandler implements InputMessageHandler {
-    private final MainMenuService mainMenuService;
+    private final MessageMenuService messageMenuService;
     private final StateCash stateCash;
-    private final OperationCash operationCash;
+    private final OperationHandler operationHandler;
 
-    public MenuHandler(MainMenuService mainMenuService, StateCash stateCash, OperationCash operationCash) {
-        this.mainMenuService = mainMenuService;
+    public MenuHandler(MessageMenuService messageMenuService, StateCash stateCash, OperationHandler operationHandler) {
+        this.messageMenuService = messageMenuService;
         this.stateCash = stateCash;
-        this.operationCash = operationCash;
+        this.operationHandler = operationHandler;
     }
 
     @Override
     public List<SendMessage> handle(String message, int userId, long chatId) {
         BotState state = stateCash.getBotState(userId);
-        SendMessage reply = new SendMessage();
-        reply.setChatId(String.valueOf(chatId));
+        List<SendMessage> reply = new ArrayList<>();
         switch (state) {
             case START:
                 stateCash.saveBotState(userId, BotState.MENU);
-                reply = mainMenuService.getMainMenuMessage(chatId, "Воспользуйтесь главным меню");
+                reply.add(messageMenuService.getMainMenuMessage(chatId, "Добро пожаловать! Воспользуйтесь главным меню."));
                 break;
             case MENU:
-                if (message.equals("Создать операцию")) {
-                    stateCash.saveBotState(userId, BotState.ASK_AMOUNT);
-                    reply.setText("Введите сумму операции");
-                    operationCash.createOperation(userId);
+                switch (message) {
+                    case "Создать операцию":
+                        stateCash.saveBotState(userId, BotState.CREATE_OPERATIONS);
+                        reply = operationHandler.handle(message, userId, chatId);
+                        break;
+                    case "Посмотреть мои операции":
+                        stateCash.saveBotState(userId, BotState.GET_OPERATIONS);
+                        reply = operationHandler.handle(message, userId, chatId);
+                        break;
+                    case "Сменить кошелек":
+                        break;
+                    case "Расшарить текущий кошелек":
+                        break;
                 }
+                break;
         }
-        return List.of(reply);
+        return reply;
     }
 
     @Override

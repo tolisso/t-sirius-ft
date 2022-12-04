@@ -6,7 +6,9 @@ package ru.sirius.natayarik.ft.botapi;
 public enum BotState {
     START,
     MENU,
+    CREATE_OPERATIONS,
     ASK_AMOUNT,
     ASK_TYPE,
-    ASK_CATEGORY
+    ASK_CATEGORY,
+    GET_OPERATIONS
 }

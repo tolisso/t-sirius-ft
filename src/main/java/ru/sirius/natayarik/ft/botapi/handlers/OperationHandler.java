@@ -8,11 +8,13 @@ import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
 import ru.sirius.natayarik.ft.cache.OperationCash;
 import ru.sirius.natayarik.ft.cache.StateCash;
-import ru.sirius.natayarik.ft.data.OperationCreateDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
+import ru.sirius.natayarik.ft.repository.OperationRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
+import ru.sirius.natayarik.ft.services.MessageMenuService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,21 +32,29 @@ public class OperationHandler implements InputMessageHandler {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    private final OperationRepository operationRepository;
+    private final MessageMenuService messageMenuService;
 
-    public OperationHandler(StateCash stateCash, OperationCash operationCash, CategoryRepository categoryRepository, UserRepository userRepository, AccountRepository accountRepository) {
+    public OperationHandler(StateCash stateCash, OperationCash operationCash, CategoryRepository categoryRepository, UserRepository userRepository, AccountRepository accountRepository, OperationRepository operationRepository, MessageMenuService messageMenuService) {
         this.stateCash = stateCash;
         this.operationCash = operationCash;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
+        this.operationRepository = operationRepository;
+        this.messageMenuService = messageMenuService;
     }
 
     @Override
     public List<SendMessage> handle(String message, int userId, long chatId) {
         BotState state = stateCash.getBotState(userId);
-        SendMessage reply = new SendMessage();
-        reply.setChatId(String.valueOf(chatId));
+        SendMessage reply;
         switch (state) {
+            case CREATE_OPERATIONS:
+                reply = messageMenuService.getWithoutMenuMessage(chatId, "Введите сумму операции");
+                operationCash.createOperation(userId);
+                stateCash.saveBotState(userId, BotState.ASK_AMOUNT);
+                break;
             case ASK_AMOUNT:
                 try {
                     BigDecimal amount = new BigDecimal(message);
@@ -52,18 +62,18 @@ public class OperationHandler implements InputMessageHandler {
                         throw new NumberFormatException();
                     }
                     operationCash.addAmount(userId, amount);
-                    reply.setText("Выберите тип операции");
+                    reply = messageMenuService.getWithoutMenuMessage(chatId,"Выберите тип операции");
                     Map<String, String> typeMap = new HashMap<>();
                     typeMap.put(TypeDTO.INCOME.name(), TypeDTO.INCOME.getLabel());
                     typeMap.put(TypeDTO.OUTCOME.name(), TypeDTO.OUTCOME.getLabel());
                     reply.setReplyMarkup(getKeyboard(typeMap));
                     stateCash.saveBotState(userId, BotState.ASK_TYPE);
                 } catch (NumberFormatException e) {
-                    reply.setText("Сумма операции должна быть положительным числом. Попробуйте ещё раз!");
+                    reply = messageMenuService.getWithoutMenuMessage(chatId,"Сумма операции должна быть положительным числом. Попробуйте ещё раз!");
                 }
                 break;
             case ASK_TYPE:
-                reply.setText("Выберите категорию:");
+                reply = messageMenuService.getWithoutMenuMessage(chatId,"Выберите категорию:");
                 Map<String, String> categoryMap = new HashMap<>();
                 if (message.equals("INCOME")) {
                     categoryRepository.findAllByTypeDTOAndUser(TypeDTO.INCOME, userRepository.findByName(String.valueOf(userId)))
@@ -79,10 +89,26 @@ public class OperationHandler implements InputMessageHandler {
                 stateCash.saveBotState(userId, BotState.MENU);
                 operationCash.addCategory(userId, Long.parseLong(message));
                 operationCash.addAccount(userId, accountRepository.findByUser(userRepository.findByName(String.valueOf(userId))).getId());
-                OperationCreateDTO result = operationCash.saveOperation(userId);
-                reply.setText("Операция успешно создана!"); //TODO показывать баланс после создания
+                operationCash.saveOperation(userId);
+                reply = messageMenuService.getMainMenuMessage(chatId, "Операция успешно создана!"); //TODO показывать баланс после создания
+                break;
+            case GET_OPERATIONS:
+                stateCash.saveBotState(userId, BotState.MENU);
+                List<OperationEntity> listOperation = operationRepository.findAllByAccountOrderByCreationDateDesc(accountRepository.findByUser(userRepository.findByName(String.valueOf(userId))));
+                StringBuilder result = new StringBuilder();
+                if (listOperation.isEmpty()) {
+                    result.append("Вы пока не добавили ни одной операции. Чтобы добавить, воспользуйтесь первой кнопкой в меню.");
+                } else {
+                    result.append("Ваши операции:\n\n");
+                }
+                for (OperationEntity operation: listOperation) {
+                    result.append(String.format("Сумма %.2f, тип %s, категория %s, дата создания %tc.\n", operation.getAmount(), operation.getCategory().getType(), operation.getCategory().getName(), operation.getCreationDate()));
+                }
+                reply = messageMenuService.getMainMenuMessage(chatId, result.toString());
+                break;
+            default:
+                reply = messageMenuService.getMainMenuMessage(chatId, "");
         }
-
         return List.of(reply);
     }
 
