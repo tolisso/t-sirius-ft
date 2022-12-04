@@ -54,6 +54,7 @@ public class InitializationUserService {
         return user;
     }
 
+
     private void createDefaultAccount(UserEntity userEntity) {
         if (accountRepository.findAllByUser(userEntity).isEmpty()) {
             AccountEntity account = new AccountEntity();

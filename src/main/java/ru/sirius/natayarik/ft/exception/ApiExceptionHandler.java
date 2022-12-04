@@ -23,13 +23,13 @@ import java.util.List;
 @ResponseBody
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {NotFoundDataException.class})
-    protected ResponseEntity<Object> handleError(NotFoundDataException ex, WebRequest request) {
+    @ExceptionHandler(value = {NotFoundDataException.class, PermissionDeniedException.class})
+    protected ResponseEntity<Object> notFoundDataError(BaseRuntimeException ex, WebRequest request) {
         logger.error("Exception in occurred", ex);
         return handleExceptionInternal(
                 ex,
-                new ApiErrorResponse("NOT_FOUND_DATA_ERROR", ex.getMessage()),
-                new HttpHeaders(), HttpStatus.BAD_REQUEST,
+                new ApiErrorResponse(ex.getErrorCode(), ex.getMessage()),
+                new HttpHeaders(), ex.getHttpStatus(),
                 request);
     }
 

@@ -1,5 +1,6 @@
 package ru.sirius.natayarik.ft.services;
 
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.CategoryConverter;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
@@ -9,11 +10,13 @@ import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.UserEntity;
 import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
+import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
 import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +48,7 @@ public class UserToAccountService {
     }
 
 
+    @Transactional
     public List<CategoryDTO> getAllCategoriesFromAccount(long accountId, TypeDTO typeDto) {
         AccountEntity account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundDataException("Not found account"));
@@ -58,12 +62,26 @@ public class UserToAccountService {
                 .stream().map(categoryConverter::convertToDTO).collect(Collectors.toList());
     }
 
-    public void addUserToAccount(long accountId) {
+    @Transactional
+    public void addUserToAccount(long accountId, String sharedUserName) {
+        AccountEntity accountEntity = accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundDataException("Not found account"));
+        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndRole(accountEntity, RoleDTO.OWNER);
+        if (userToAccountEntity.getUser().getId() != currentUserService.getUser().getId()) {
+            throw new PermissionDeniedException("Current user don't have permission to invite users to this account"); // TODO
+        }
         UserToAccountEntity created = new UserToAccountEntity();
-        created.setAccount(accountRepository.findById(accountId)
-                .orElseThrow(() -> new NotFoundDataException("Not found account")));
-        created.setUser(currentUserService.getUser());
+        created.setAccount(accountEntity);
+        UserEntity sharedUser = userRepository.findByName(sharedUserName);
+        if (sharedUser == null) {
+            throw new NotFoundDataException("Not found user with shared username");
+        }
+        created.setUser(sharedUser);
         created.setRole(RoleDTO.MEMBER);
         userToAccountRepository.save(created);
+    }
+
+    public boolean checkPermissionCurrentUserWithAccount(AccountEntity accountEntity) {
+        return userToAccountRepository.findByAccountAndUser(accountEntity, currentUserService.getUser()) != null;
     }
 }

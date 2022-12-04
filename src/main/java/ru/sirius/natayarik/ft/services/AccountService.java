@@ -10,6 +10,7 @@ import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ public class AccountService {
         return accountConverter.convertToDTO(accountRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found account")));
     }
 
+    @Transactional
     public AccountDTO create(final AccountDTO accountDTO) {
         AccountEntity result = accountRepository.save(accountConverter.convertToEntity(accountDTO));
         userToAccountRepository.save(new UserToAccountEntity(currentUserService.getUser(), result, RoleDTO.OWNER));
@@ -50,6 +52,7 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void delete(long accountId) {
         accountRepository.delete(accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Not found account")));
     }

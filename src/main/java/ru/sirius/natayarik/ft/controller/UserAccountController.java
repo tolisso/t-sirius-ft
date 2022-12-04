@@ -2,10 +2,7 @@ package ru.sirius.natayarik.ft.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.sirius.natayarik.ft.services.UserToAccountService;
 
 /**
@@ -23,7 +20,7 @@ public class UserAccountController {
 
     @Operation(summary = "Метод для добавления пользователя в кошелек")
     @PostMapping(value = "/{accountId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void addUser(@PathVariable("accountId") long accountId) {
-        userToAccountService.addUserToAccount(accountId);
+    public void addUser(@PathVariable("accountId") long accountId, @RequestParam String sharedUserName) {
+        userToAccountService.addUserToAccount(accountId, sharedUserName);
     }
 }
