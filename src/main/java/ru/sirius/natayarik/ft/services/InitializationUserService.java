@@ -23,23 +23,23 @@ import java.math.BigDecimal;
 
 @Service
 public class InitializationUserService {
+    private final AccountService accountService;
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final CategoryRepository categoryRepository;
-    private final UserToAccountRepository userToAccountRepository;
 
     public InitializationUserService(
+            AccountService accountService,
             AccountRepository accountRepository,
             UserRepository userRepository,
             UserConverter userConverter,
-            CategoryRepository categoryRepository,
-            UserToAccountRepository userToAccountRepository) {
+            CategoryRepository categoryRepository) {
+        this.accountService = accountService;
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
         this.userConverter = userConverter;
         this.categoryRepository = categoryRepository;
-        this.userToAccountRepository = userToAccountRepository;
     }
 
     @Transactional
@@ -61,8 +61,7 @@ public class InitializationUserService {
             account.setBalance(new BigDecimal(0));
             account.setName("Кошелек 1");
             account.setUser(userEntity);
-            accountRepository.save(account);
-            userToAccountRepository.save(new UserToAccountEntity(userEntity, account, RoleDTO.OWNER));
+            accountService.create(account);
         }
     }
 

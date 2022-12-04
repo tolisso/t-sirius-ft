@@ -24,7 +24,7 @@ import java.util.List;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundDataException.class, PermissionDeniedException.class})
-    protected ResponseEntity<Object> notFoundDataError(BaseRuntimeException ex, WebRequest request) {
+    protected ResponseEntity<Object> handleError(BaseApiException ex, WebRequest request) {
         logger.error("Exception in occurred", ex);
         return handleExceptionInternal(
                 ex,

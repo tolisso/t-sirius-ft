@@ -10,12 +10,10 @@ import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
-import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 /**

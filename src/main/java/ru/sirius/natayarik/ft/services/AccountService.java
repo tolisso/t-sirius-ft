@@ -39,9 +39,13 @@ public class AccountService {
 
     @Transactional
     public AccountDTO create(final AccountDTO accountDTO) {
-        AccountEntity result = accountRepository.save(accountConverter.convertToEntity(accountDTO));
+        return accountConverter.convertToDTO(create(accountConverter.convertToEntity(accountDTO)));
+    }
+
+    public AccountEntity create(final AccountEntity accountEntity) {
+        AccountEntity result = accountRepository.save(accountEntity);
         userToAccountRepository.save(new UserToAccountEntity(currentUserService.getUser(), result, RoleDTO.OWNER));
-        return accountConverter.convertToDTO(result);
+        return result;
     }
 
     public List<AccountDTO> getAll() {

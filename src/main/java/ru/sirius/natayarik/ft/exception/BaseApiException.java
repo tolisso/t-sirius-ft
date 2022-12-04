@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
  * @author Yaroslav Ilin
  */
 
-public abstract class BaseRuntimeException extends RuntimeException {
+public class BaseApiException extends RuntimeException {
     private final String errorCode;
     private final HttpStatus httpStatus;
 
-    public BaseRuntimeException(String message, String errorCode, HttpStatus httpStatus) {
+    public BaseApiException(String message, String errorCode, HttpStatus httpStatus) {
         super(message);
         this.errorCode = errorCode;
         this.httpStatus = httpStatus;

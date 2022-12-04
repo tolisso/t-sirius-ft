@@ -37,7 +37,7 @@ public class CategoryController {
     @Operation(summary = "Метод для получения списка категорий пользователя по типу")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam(defaultValue = "0") long accountId) {
+    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam Long accountId) {
         return accountId == 0
                 ? categoryService.getAll(typeDTO)
                 : userToAccountService.getAllCategoriesFromAccount(accountId, typeDTO);
