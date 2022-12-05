@@ -4,13 +4,13 @@ package ru.sirius.natayarik.ft.data;
  * @author Egor Malko
  */
 
-public enum TypeDTO {
+public enum Type {
     INCOME("доход"),
     OUTCOME("расход");
 
     private final String label;
 
-    TypeDTO(String label) {
+    Type(String label) {
         this.label = label;
     }
 

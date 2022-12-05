@@ -17,7 +17,7 @@ public class CategoryDTO extends BaseDTO {
     private String name;
     @NotNull
     @Schema(description = "Тип операции(Доход/Расход)")
-    private TypeDTO typeDTO;
+    private Type type;
 
     public CategoryDTO() {
     }
@@ -46,11 +46,11 @@ public class CategoryDTO extends BaseDTO {
         this.name = name;
     }
 
-    public TypeDTO getType() {
-        return typeDTO;
+    public Type getType() {
+        return type;
     }
 
-    public void setType(TypeDTO typeDTO) {
-        this.typeDTO = typeDTO;
+    public void setType(Type type) {
+        this.type = type;
     }
 }

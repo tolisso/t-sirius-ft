@@ -1,13 +1,14 @@
 package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 /**
@@ -23,8 +24,10 @@ public class AccountBalanceService {
         this.accountRepository = accountRepository;
     }
 
-    public BigDecimal getSumByType(long accountId, TypeDTO type) {
-        return operationRepository.findAllByAccount(accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Don't find account by id")))
+    @Transactional
+    public BigDecimal getSumByType(long accountId, Type type) {
+        return operationRepository.findAllByAccount(accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundDataException("Don't find account by id")))
                 .stream()
                 .filter((operation) -> operation.getCategory().getType() == type)
                 .map((OperationEntity::getAmount))
@@ -32,9 +35,10 @@ public class AccountBalanceService {
                 .orElse(new BigDecimal(0));
     }
 
+    @Transactional
     public void updateBalance(long accountId) {
         AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Don't find account by id"));
-        account.setBalance(getSumByType(accountId, TypeDTO.INCOME).subtract(getSumByType(accountId, TypeDTO.OUTCOME)));
+        account.setBalance(getSumByType(accountId, Type.INCOME).subtract(getSumByType(accountId, Type.OUTCOME)));
         accountRepository.save(account);
     }
 }

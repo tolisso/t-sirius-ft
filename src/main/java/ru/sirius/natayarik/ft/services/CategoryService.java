@@ -3,11 +3,11 @@ package ru.sirius.natayarik.ft.services;
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.CategoryConverter;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
-import ru.sirius.natayarik.ft.data.TypeDTO;
-import ru.sirius.natayarik.ft.entity.CategoryEntity;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,10 +33,10 @@ public class CategoryService {
         return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
     }
 
-    public List<CategoryDTO> getAll(TypeDTO typeDTO) {
+    public List<CategoryDTO> getAll(Type type) {
        return categoryRepository
-               .findAllByTypeDTOAndUser(
-                       typeDTO, userService.getUserFromId(currentUserService.getUser().getId()))
+               .findAllByTypeAndUser(
+                       type, currentUserService.getUser())
                .stream()
                .map(categoryConverter::convertToDTO)
                .collect(Collectors.toList());
@@ -47,6 +47,7 @@ public class CategoryService {
         return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundDataException("Not found category")));
     }
 
+    @Transactional
     public void delete(long categoryId) {
         categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundDataException("Not found category")));
     }
