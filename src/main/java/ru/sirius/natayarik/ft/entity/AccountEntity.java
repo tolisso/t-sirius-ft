@@ -15,9 +15,6 @@ public class AccountEntity {
     @Column(name = "id")
     private long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
     @Column(name = "name")
     private String name;
     @Column(name = "balance")
@@ -29,14 +26,6 @@ public class AccountEntity {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
     }
 
     public String getName() {

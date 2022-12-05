@@ -1,13 +1,14 @@
 package ru.sirius.natayarik.ft.converter;
 
 import org.springframework.stereotype.Component;
-import ru.sirius.natayarik.ft.data.AccountDTO;
-import ru.sirius.natayarik.ft.data.Currency;
-import ru.sirius.natayarik.ft.data.Type;
+import ru.sirius.natayarik.ft.data.*;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.UserRepository;
+import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 import ru.sirius.natayarik.ft.services.AccountBalanceService;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -15,19 +16,19 @@ import ru.sirius.natayarik.ft.services.AccountBalanceService;
  */
 @Component
 public class AccountConverter {
-    private final UserRepository userRepository;
     private final AccountBalanceService accountBalanceService;
+    private final UserToAccountRepository userToAccountRepository;
 
-    public AccountConverter(UserRepository userRepository, AccountBalanceService accountBalanceService) {
-        this.userRepository = userRepository;
+    public AccountConverter(UserRepository userRepository, AccountBalanceService accountBalanceService, UserToAccountRepository userToAccountRepository) {
         this.accountBalanceService = accountBalanceService;
+        this.userToAccountRepository = userToAccountRepository;
     }
 
     public AccountDTO convertToDTO(AccountEntity accountEntity) {
         AccountDTO result = new AccountDTO();
         result.setId(accountEntity.getId());
         result.setName(accountEntity.getName());
-        result.setUserId(accountEntity.getUser().getId());
+        result.setUserId(userToAccountRepository.findByAccountAndRole(accountEntity, Role.OWNER).getUser().getId());
         result.setCurrency(Currency.RUSSIAN_RUBLE);
         result.setBalance(accountEntity.getBalance());
 
@@ -40,8 +41,14 @@ public class AccountConverter {
         AccountEntity result = new AccountEntity();
         result.setId(accountDTO.getId());
         result.setName(accountDTO.getName());
-        result.setUser(userRepository.findById(accountDTO.getUserId()).orElseThrow(() -> new NotFoundDataException("not found user by id " + accountDTO.getUserId())));
         result.setBalance(accountDTO.getBalance());
+        return result;
+    }
+
+    public AccountEntity convertFromCreateDTO(AccountCreateDTO accountCreateDTO) {
+        AccountEntity result = new AccountEntity();
+        result.setBalance(new BigDecimal(0));
+        result.setName(accountCreateDTO.getName());
         return result;
     }
 }

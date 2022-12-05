@@ -9,7 +9,9 @@ import java.math.BigDecimal;
  * @author Egor Malko
  */
 
-public class AccountDTO extends BaseDTO {
+public class AccountDTO extends AccountCreateDTO {
+    private long id;
+
     @Schema(description = "Id пользователя - владельца кошелька")
     private long userId;
     @NotBlank
@@ -20,6 +22,14 @@ public class AccountDTO extends BaseDTO {
     private BigDecimal balance;
     private BigDecimal income;
     private BigDecimal outcome;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public long getUserId() {
         return userId;
