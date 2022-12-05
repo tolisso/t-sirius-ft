@@ -2,17 +2,14 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.UserConverter;
-import ru.sirius.natayarik.ft.data.RoleDTO;
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.data.UserDTO;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.CategoryEntity;
 import ru.sirius.natayarik.ft.entity.UserEntity;
-import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
-import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
@@ -67,18 +64,18 @@ public class InitializationUserService {
 
     private void createDefaultCategories(UserEntity userEntity) {
         if (categoryRepository.findAllByUser(userEntity).isEmpty()) {
-            saveCategory(userEntity, "Зарплата", TypeDTO.INCOME);
-            saveCategory(userEntity, "Подработка", TypeDTO.INCOME);
-            saveCategory(userEntity, "Подарок", TypeDTO.INCOME);
-            saveCategory(userEntity, "Капитализация", TypeDTO.INCOME);
-            saveCategory(userEntity, "Супермаркеты", TypeDTO.OUTCOME);
-            saveCategory(userEntity, "Переводы", TypeDTO.OUTCOME);
-            saveCategory(userEntity, "Транспорт", TypeDTO.OUTCOME);
-            saveCategory(userEntity, "Другое", TypeDTO.OUTCOME);
+            saveCategory(userEntity, "Зарплата", Type.INCOME);
+            saveCategory(userEntity, "Подработка", Type.INCOME);
+            saveCategory(userEntity, "Подарок", Type.INCOME);
+            saveCategory(userEntity, "Капитализация", Type.INCOME);
+            saveCategory(userEntity, "Супермаркеты", Type.OUTCOME);
+            saveCategory(userEntity, "Переводы", Type.OUTCOME);
+            saveCategory(userEntity, "Транспорт", Type.OUTCOME);
+            saveCategory(userEntity, "Другое", Type.OUTCOME);
         }
     }
 
-    private void saveCategory(UserEntity userEntity, String name, TypeDTO typeDTO) {
-        categoryRepository.save(new CategoryEntity(userEntity, name, typeDTO));
+    private void saveCategory(UserEntity userEntity, String name, Type type) {
+        categoryRepository.save(new CategoryEntity(userEntity, name, type));
     }
 }

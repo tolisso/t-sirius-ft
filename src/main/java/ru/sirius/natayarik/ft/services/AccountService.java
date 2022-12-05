@@ -3,7 +3,7 @@ package ru.sirius.natayarik.ft.services;
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.AccountConverter;
 import ru.sirius.natayarik.ft.data.AccountDTO;
-import ru.sirius.natayarik.ft.data.RoleDTO;
+import ru.sirius.natayarik.ft.data.Role;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
@@ -44,7 +44,7 @@ public class AccountService {
 
     public AccountEntity create(final AccountEntity accountEntity) {
         AccountEntity result = accountRepository.save(accountEntity);
-        userToAccountRepository.save(new UserToAccountEntity(currentUserService.getUser(), result, RoleDTO.OWNER));
+        userToAccountRepository.save(new UserToAccountEntity(currentUserService.getUser(), result, Role.OWNER));
         return result;
     }
 

@@ -3,8 +3,7 @@ package ru.sirius.natayarik.ft.services;
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.CategoryConverter;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
-import ru.sirius.natayarik.ft.data.TypeDTO;
-import ru.sirius.natayarik.ft.entity.CategoryEntity;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 
@@ -34,10 +33,10 @@ public class CategoryService {
         return categoryConverter.convertToDTO(categoryRepository.save(categoryConverter.convertToEntity(category)));
     }
 
-    public List<CategoryDTO> getAll(TypeDTO typeDTO) {
+    public List<CategoryDTO> getAll(Type type) {
        return categoryRepository
-               .findAllByTypeDTOAndUser(
-                       typeDTO, currentUserService.getUser())
+               .findAllByTypeAndUser(
+                       type, currentUserService.getUser())
                .stream()
                .map(categoryConverter::convertToDTO)
                .collect(Collectors.toList());

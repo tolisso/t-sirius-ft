@@ -2,8 +2,8 @@ package ru.sirius.natayarik.ft.converter;
 
 import org.springframework.stereotype.Component;
 import ru.sirius.natayarik.ft.data.AccountDTO;
-import ru.sirius.natayarik.ft.data.CurrencyDTO;
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Currency;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.UserRepository;
@@ -28,11 +28,11 @@ public class AccountConverter {
         result.setId(accountEntity.getId());
         result.setName(accountEntity.getName());
         result.setUserId(accountEntity.getUser().getId());
-        result.setCurrency(CurrencyDTO.RUSSIAN_RUBLE);
+        result.setCurrency(Currency.RUSSIAN_RUBLE);
         result.setBalance(accountEntity.getBalance());
 
-        result.setIncome(accountBalanceService.getSumByType(accountEntity.getId(), TypeDTO.INCOME));
-        result.setOutcome(accountBalanceService.getSumByType(accountEntity.getId(), TypeDTO.OUTCOME));
+        result.setIncome(accountBalanceService.getSumByType(accountEntity.getId(), Type.INCOME));
+        result.setOutcome(accountBalanceService.getSumByType(accountEntity.getId(), Type.OUTCOME));
         return result;
     }
 

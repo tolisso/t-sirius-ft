@@ -1,9 +1,8 @@
 package ru.sirius.natayarik.ft.entity;
 
-import ru.sirius.natayarik.ft.data.RoleDTO;
+import ru.sirius.natayarik.ft.data.Role;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * @author Yaroslav Ilin
@@ -27,12 +26,12 @@ public class UserToAccountEntity {
     private AccountEntity account;
 
     @Enumerated(value = EnumType.STRING)
-    private RoleDTO role;
+    private Role role;
 
     public UserToAccountEntity() {
     }
 
-    public UserToAccountEntity(UserEntity user, AccountEntity account, RoleDTO role) {
+    public UserToAccountEntity(UserEntity user, AccountEntity account, Role role) {
         this.user = user;
         this.account = account;
         this.role = role;
@@ -54,11 +53,11 @@ public class UserToAccountEntity {
         this.user = user;
     }
 
-    public RoleDTO getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(RoleDTO role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

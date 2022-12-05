@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.services.CategoryService;
 import ru.sirius.natayarik.ft.services.UserToAccountService;
 
@@ -37,10 +37,10 @@ public class CategoryController {
     @Operation(summary = "Метод для получения списка категорий пользователя по типу")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam Long accountId) {
+    public List<CategoryDTO> getAllCategories(@RequestParam Type type, @RequestParam Long accountId) {
         return accountId == 0
-                ? categoryService.getAll(typeDTO)
-                : userToAccountService.getAllCategoriesFromAccount(accountId, typeDTO);
+                ? categoryService.getAll(type)
+                : userToAccountService.getAllCategoriesFromAccount(accountId, type);
     }
 
 

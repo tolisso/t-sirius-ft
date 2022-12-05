@@ -1,6 +1,6 @@
 package ru.sirius.natayarik.ft.entity;
 
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Type;
 
 import javax.persistence.*;
 
@@ -23,16 +23,16 @@ public class CategoryEntity {
    private String name;
    @Enumerated(value = EnumType.STRING)
    @Column(name = "type")
-   private TypeDTO typeDTO;
+   private Type type;
 
    public CategoryEntity() {
 
    }
 
-   public CategoryEntity(UserEntity user, String name, TypeDTO typeDTO) {
+   public CategoryEntity(UserEntity user, String name, Type type) {
       this.user = user;
       this.name = name;
-      this.typeDTO = typeDTO;
+      this.type = type;
    }
 
    public long getId() {
@@ -59,11 +59,11 @@ public class CategoryEntity {
       this.name = name;
    }
 
-   public TypeDTO getType() {
-      return typeDTO;
+   public Type getType() {
+      return type;
    }
 
-   public void setType(TypeDTO typeDTO) {
-      this.typeDTO = typeDTO;
+   public void setType(Type type) {
+      this.type = type;
    }
 }

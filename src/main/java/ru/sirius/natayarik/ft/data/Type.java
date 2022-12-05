@@ -4,7 +4,7 @@ package ru.sirius.natayarik.ft.data;
  * @author Egor Malko
  */
 
-public enum TypeDTO {
+public enum Type {
     INCOME,
-    OUTCOME;
+    OUTCOME
 }

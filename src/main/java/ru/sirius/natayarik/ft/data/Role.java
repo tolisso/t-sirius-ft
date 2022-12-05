@@ -4,7 +4,7 @@ package ru.sirius.natayarik.ft.data;
  * @author Yaroslav Ilin
  */
 
-public enum RoleDTO {
+public enum Role {
     OWNER,
     MEMBER
 }

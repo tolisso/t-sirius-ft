@@ -2,7 +2,6 @@ package ru.sirius.natayarik.ft.data;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
@@ -17,7 +16,7 @@ public class AccountDTO extends BaseDTO {
     @Schema(description = "Имя кошелька")
     private String name;
     @Schema(description = "Валюта") // Не на что не влияет сейчас!
-    private CurrencyDTO currency;
+    private Currency currency;
     private BigDecimal balance;
     private BigDecimal income;
     private BigDecimal outcome;
@@ -38,11 +37,11 @@ public class AccountDTO extends BaseDTO {
         this.name = name;
     }
 
-    public CurrencyDTO getCurrency() {
+    public Currency getCurrency() {
         return currency;
     }
 
-    public void setCurrency(CurrencyDTO currency) {
+    public void setCurrency(Currency currency) {
         this.currency = currency;
     }
 

@@ -3,8 +3,8 @@ package ru.sirius.natayarik.ft.services;
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.CategoryConverter;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
-import ru.sirius.natayarik.ft.data.RoleDTO;
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Role;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.UserEntity;
 import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
@@ -48,16 +48,16 @@ public class UserToAccountService {
 
 
     @Transactional
-    public List<CategoryDTO> getAllCategoriesFromAccount(long accountId, TypeDTO typeDto) {
+    public List<CategoryDTO> getAllCategoriesFromAccount(long accountId, Type type) {
         AccountEntity account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundDataException("Not found account"));
-        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndRole(account, RoleDTO.OWNER);
+        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndRole(account, Role.OWNER);
         if (userToAccountEntity == null) {
             throw new NotFoundDataException("Not found mapping user to account entity");
         }
         UserEntity user = userRepository.findById(userToAccountEntity.getUser().getId())
                 .orElseThrow(() -> new NotFoundDataException("Not found account owner"));
-        return categoryRepository.findAllByTypeDTOAndUser(typeDto, user)
+        return categoryRepository.findAllByTypeAndUser(type, user)
                 .stream().map(categoryConverter::convertToDTO).collect(Collectors.toList());
     }
 
@@ -65,7 +65,7 @@ public class UserToAccountService {
     public void addUserToAccount(long accountId, String sharedUserName) {
         AccountEntity accountEntity = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundDataException("Not found account"));
-        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndRole(accountEntity, RoleDTO.OWNER);
+        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndRole(accountEntity, Role.OWNER);
         if (userToAccountEntity.getUser().getId() != currentUserService.getUser().getId()) {
             throw new PermissionDeniedException("Current user don't have permission to invite users to this account"); // TODO
         }
@@ -76,7 +76,7 @@ public class UserToAccountService {
             throw new NotFoundDataException("Not found user with shared username");
         }
         created.setUser(sharedUser);
-        created.setRole(RoleDTO.MEMBER);
+        created.setRole(Role.MEMBER);
         userToAccountRepository.save(created);
     }
 
