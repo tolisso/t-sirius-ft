@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
 import ru.sirius.natayarik.ft.cache.OperationCash;
-import ru.sirius.natayarik.ft.data.TypeDTO;
+import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
@@ -60,8 +60,8 @@ public class OperationHandler implements InputMessageHandler {
                     }
                     operationCash.addAmount(userId, amount);
                     Map<String, String> typeMap = new HashMap<>();
-                    typeMap.put(TypeDTO.INCOME.name(), TypeDTO.INCOME.getLabel());
-                    typeMap.put(TypeDTO.OUTCOME.name(), TypeDTO.OUTCOME.getLabel());
+                    typeMap.put(Type.INCOME.name(), Type.INCOME.getLabel());
+                    typeMap.put(Type.OUTCOME.name(), Type.OUTCOME.getLabel());
                     reply = messageMenuService.getInlineMenuMessage(chatId, "Выберите тип операции", typeMap);
                     telegramUserService.setBotState(userId, BotState.ASK_TYPE);
                 } catch (NumberFormatException e) {
@@ -71,14 +71,21 @@ public class OperationHandler implements InputMessageHandler {
             case ASK_TYPE:
                 Map<String, String> categoryMap = new HashMap<>();
                 if (message.equals("INCOME")) {
-                    categoryRepository.findAllByTypeDTOAndUser(TypeDTO.INCOME, userRepository.findByName(String.valueOf(userId)))
+                    categoryRepository.findAllByTypeAndUser(Type.INCOME, userRepository.findByName(String.valueOf(userId)))
                             .forEach(category -> categoryMap.put(String.valueOf(category.getId()), category.getName()));
+                    reply = messageMenuService.getInlineMenuMessage(chatId,"Выберите категорию:", categoryMap);
+                    telegramUserService.setBotState(userId, BotState.ASK_CATEGORY);
+                } else if (message.equals("OUTCOME")) {
+                    categoryRepository.findAllByTypeAndUser(Type.OUTCOME, userRepository.findByName(String.valueOf(userId)))
+                            .forEach(category -> categoryMap.put(String.valueOf(category.getId()), category.getName()));
+                    reply = messageMenuService.getInlineMenuMessage(chatId,"Выберите категорию:", categoryMap);
+                    telegramUserService.setBotState(userId, BotState.ASK_CATEGORY);
                 } else {
-                    categoryRepository.findAllByTypeDTOAndUser(TypeDTO.OUTCOME, userRepository.findByName(String.valueOf(userId)))
-                            .forEach(category -> categoryMap.put(String.valueOf(category.getId()), category.getName()));
+                    Map<String, String> typeMap = new HashMap<>();
+                    typeMap.put(Type.INCOME.name(), Type.INCOME.getLabel());
+                    typeMap.put(Type.OUTCOME.name(), Type.OUTCOME.getLabel());
+                    reply = messageMenuService.getInlineMenuMessage(chatId, "Пожалуйста, нажмите на кнопку, а не пишите что-нибудь. Выберите тип операции", typeMap);
                 }
-                reply = messageMenuService.getInlineMenuMessage(chatId,"Выберите категорию:", categoryMap);
-                telegramUserService.setBotState(userId, BotState.ASK_CATEGORY);
                 break;
             case ASK_CATEGORY:
                 telegramUserService.setBotState(userId, BotState.MENU);

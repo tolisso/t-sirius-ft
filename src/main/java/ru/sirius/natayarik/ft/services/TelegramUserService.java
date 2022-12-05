@@ -2,9 +2,7 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.botapi.BotState;
-import ru.sirius.natayarik.ft.data.UserDTO;
 import ru.sirius.natayarik.ft.entity.TelegramUserEntity;
-import ru.sirius.natayarik.ft.entity.UserEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.TelegramUserRepository;
 
@@ -14,25 +12,22 @@ import ru.sirius.natayarik.ft.repository.TelegramUserRepository;
 @Service
 public class TelegramUserService {
     private final TelegramUserRepository telegramUserRepository;
-    private final InitializationUserService initializationUserService;
     private final AccountRepository accountRepository;
+    private final CurrentUserService currentUserService;
 
-    public TelegramUserService(TelegramUserRepository telegramUserRepository, InitializationUserService initializationUserService, AccountRepository accountRepository) {
+    public TelegramUserService(TelegramUserRepository telegramUserRepository, AccountRepository accountRepository, CurrentUserService currentUserService) {
         this.telegramUserRepository = telegramUserRepository;
-        this.initializationUserService = initializationUserService;
         this.accountRepository = accountRepository;
+        this.currentUserService = currentUserService;
     }
 
     public BotState getBotState(String userId) {
-        TelegramUserEntity user = telegramUserRepository.findByUserId(userId);
+        TelegramUserEntity user = telegramUserRepository.findByUserId(currentUserService.getUser().getName());
         if (user == null) {
             TelegramUserEntity newUser = new TelegramUserEntity();
-            UserDTO newUserDTO = new UserDTO();
-            newUserDTO.setName(userId);
-            UserEntity newUserEntity = initializationUserService.initializationUser(newUserDTO);
-            newUser.setUserId(newUserEntity.getName());
+            newUser.setUserId(currentUserService.getUser().getName());
             newUser.setState(BotState.START);
-            newUser.setAccountEntity(accountRepository.findByUser(newUserEntity));
+            newUser.setAccountEntity(accountRepository.findByUser(currentUserService.getUser()));
             user = telegramUserRepository.save(newUser);
         }
         return user.getState();

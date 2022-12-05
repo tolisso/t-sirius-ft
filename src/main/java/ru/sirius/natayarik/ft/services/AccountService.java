@@ -26,7 +26,7 @@ public class AccountService {
     private final UserToAccountRepository userToAccountRepository;
 
 
-    public AccountService(AccountRepository accountRepository, AccountConverter accountConverter, UserService userService, CurrentUserService currentUserService, UserToAccountRepository userToAccountRepository) {
+    public AccountService(AccountRepository accountRepository, AccountConverter accountConverter,  CurrentUserService currentUserService, UserToAccountRepository userToAccountRepository) {
         this.accountRepository = accountRepository;
         this.accountConverter = accountConverter;
         this.currentUserService = currentUserService;

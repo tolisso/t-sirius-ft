@@ -1,5 +1,6 @@
 package ru.sirius.natayarik.ft.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 import ru.sirius.natayarik.ft.data.UserDTO;
@@ -10,24 +11,20 @@ import ru.sirius.natayarik.ft.entity.UserEntity;
  */
 
 @Component
-@RequestScope
 public class CurrentUserService {
-    private UserEntity user;
-    private final InitializationUserService initializationUserService;
-
-    public CurrentUserService(InitializationUserService initializationUserService) {
-        this.initializationUserService = initializationUserService;
-    }
+    private final ThreadLocal<UserEntity> user = new ThreadLocal<>();
+    @Autowired
+    private InitializationUserService initializationUserService;
 
 
     public void setUser(final String name) {
         UserDTO userDTO = new UserDTO();
         userDTO.setName(name);
-        user = initializationUserService.initializationUser(userDTO);
+        user.set(initializationUserService.initializationUser(userDTO));
     }
 
     public UserEntity getUser() {
-        return user;
+        return user.get();
     }
 
 }
