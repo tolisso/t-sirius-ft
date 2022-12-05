@@ -29,27 +29,27 @@ public class MenuHandler implements InputMessageHandler {
     }
 
     @Override
-    public List<SendMessage> handle(String message, String userId, long chatId) {
-        BotState state = telegramUserService.getBotState(userId);
+    public List<SendMessage> handle(String message, long chatId) {
+        BotState state = telegramUserService.getBotState();
         List<SendMessage> reply = new ArrayList<>();
         switch (state) {
             case START:
-                telegramUserService.setBotState(userId, BotState.MENU);
+                telegramUserService.setBotState(BotState.MENU);
                 reply.add(messageMenuService.getMainMenuMessage(chatId, "Добро пожаловать! Воспользуйтесь главным меню."));
                 break;
             case MENU:
                 switch (message) {
                     case "Создать операцию":
-                        telegramUserService.setBotState(userId, BotState.CREATE_OPERATIONS);
-                        reply = operationHandler.handle(message, userId, chatId);
+                        telegramUserService.setBotState(BotState.CREATE_OPERATIONS);
+                        reply = operationHandler.handle(message, chatId);
                         break;
                     case "Посмотреть мои операции":
-                        telegramUserService.setBotState(userId, BotState.GET_OPERATIONS);
-                        reply = operationHandler.handle(message, userId, chatId);
+                        telegramUserService.setBotState(BotState.GET_OPERATIONS);
+                        reply = operationHandler.handle(message, chatId);
                         break;
                     case "Сменить кошелек":
-                        telegramUserService.setBotState(userId, BotState.CHANGE_ACCOUNT);
-                        reply = accountHandler.handle(message, userId, chatId);
+                        telegramUserService.setBotState(BotState.CHANGE_ACCOUNT);
+                        reply = accountHandler.handle(message, chatId);
                         break;
                     case "Расшарить текущий кошелек":
                         reply = List.of(messageMenuService.getMainMenuMessage(chatId, "Данная функция пока не поддерживается"));
@@ -66,10 +66,5 @@ public class MenuHandler implements InputMessageHandler {
     @Override
     public List<BotState> getOperatedState() {
         return List.of(BotState.START, BotState.MENU);
-    }
-
-    @Override
-    public List<String> operatedCallBackQuery() {
-        return Collections.emptyList();
     }
 }

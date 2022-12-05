@@ -21,7 +21,7 @@ public class TelegramUserService {
         this.currentUserService = currentUserService;
     }
 
-    public BotState getBotState(String userId) {
+    public BotState getBotState() {
         TelegramUserEntity user = telegramUserRepository.findByUserId(currentUserService.getUser().getName());
         if (user == null) {
             TelegramUserEntity newUser = new TelegramUserEntity();
@@ -33,19 +33,19 @@ public class TelegramUserService {
         return user.getState();
     }
 
-    public void setBotState(String userId, BotState state) {
-        TelegramUserEntity user = telegramUserRepository.findByUserId(userId);
+    public void setBotState(BotState state) {
+        TelegramUserEntity user = telegramUserRepository.findByUserId(currentUserService.getUser().getName());
         user.setState(state);
         telegramUserRepository.save(user);
     }
 
-    public void setCurrentAccount(String userId, long accountId) {
-        TelegramUserEntity user = telegramUserRepository.findByUserId(userId);
+    public void setCurrentAccount(long accountId) {
+        TelegramUserEntity user = telegramUserRepository.findByUserId(currentUserService.getUser().getName());
         user.setAccountEntity(accountRepository.findById(accountId).orElseThrow(RuntimeException::new));
         telegramUserRepository.save(user);
     }
 
-    public long getCurrentAccountId(String userId) {
-        return telegramUserRepository.findByUserId(userId).getAccountEntity().getId();
+    public long getCurrentAccountId() {
+        return telegramUserRepository.findByUserId(currentUserService.getUser().getName()).getAccountEntity().getId();
     }
 }

@@ -31,14 +31,14 @@ public class TelegramFacade {
             Message message = update.getMessage();
             String userId = String.valueOf(message.getFrom().getId());
             currentUserService.setUser(userId);
-            BotState state = telegramUserService.getBotState(userId);
-            return getHandlerByState(state).handle(message.getText(), userId, message.getChatId());
+            BotState state = telegramUserService.getBotState();
+            return getHandlerByState(state).handle(message.getText(), message.getChatId());
         } else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String userId = String.valueOf(callbackQuery.getFrom().getId());
             currentUserService.setUser(userId);
-            BotState state = telegramUserService.getBotState(userId);
-            return getHandlerByState(state).handle(callbackQuery.getData(), userId, callbackQuery.getMessage().getChatId());
+            BotState state = telegramUserService.getBotState();
+            return getHandlerByState(state).handle(callbackQuery.getData(), callbackQuery.getMessage().getChatId());
         } else {
             return Collections.emptyList();
         }
@@ -47,15 +47,6 @@ public class TelegramFacade {
     private InputMessageHandler getHandlerByState(BotState state) {
         return handlers.stream()
                 .filter(h -> (h.getOperatedState() != null) && (h.getOperatedState().contains(state)))
-                .findAny()
-                .orElseThrow(UnsupportedOperationException::new);
-    }
-
-    private InputMessageHandler getHandlerByCallBackQuery(String query) { //запросы от кнопок у сообщения изменить!!!
-        return handlers.stream()
-                .filter(h -> h.operatedCallBackQuery()
-                        .stream()
-                        .anyMatch(query::startsWith))
                 .findAny()
                 .orElseThrow(UnsupportedOperationException::new);
     }
