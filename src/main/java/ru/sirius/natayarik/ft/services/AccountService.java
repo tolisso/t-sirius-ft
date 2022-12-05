@@ -37,7 +37,11 @@ public class AccountService {
 
     @Transactional
     public AccountDTO getAccountById(final long id) {
-        return accountConverter.convertToDTO(safeGetAccount(id));
+        AccountEntity account = accountRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found account"));
+        if (userToAccountRepository.findByAccountAndUser(account, currentUserService.getUser()) == null) {
+            throw new PermissionDeniedException("User doesn't have access to this account.");
+        }
+        return accountConverter.convertToDTO(account);
     }
 
     public AccountDTO create(final AccountCreateDTO accountDTO) {
@@ -62,18 +66,19 @@ public class AccountService {
 
     @Transactional
     public void delete(long accountId) {
-        accountRepository.delete(safeGetAccount(accountId));
+        accountRepository.delete(safeGetOwnerAccount(accountId));
     }
 
     @Transactional
     public AccountDTO change(final AccountDTO accountDTO) {
-        safeGetAccount(accountDTO.getId());
+        safeGetOwnerAccount(accountDTO.getId());
         return accountConverter.convertToDTO(accountRepository.save(accountConverter.convertToEntity(accountDTO)));
     }
 
-    private AccountEntity safeGetAccount(final long accountId) {
+    private AccountEntity safeGetOwnerAccount(final long accountId) {
         AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Not found account"));
-        if (userToAccountRepository.findByAccountAndUser(account, currentUserService.getUser()) == null) {
+        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndUser(account, currentUserService.getUser());
+        if (userToAccountEntity == null || userToAccountEntity.getRole() != Role.OWNER) {
             throw new PermissionDeniedException("User doesn't have access to this account.");
         }
         return account;
