@@ -54,6 +54,9 @@ public class MenuHandler implements InputMessageHandler {
                     case "Расшарить текущий кошелек":
                         reply = List.of(messageMenuService.getMainMenuMessage(chatId, "Данная функция пока не поддерживается"));
                         break;
+                    default:
+                        reply = List.of(messageMenuService.getMainMenuMessage(chatId, "Такой команды не существует, но можете просто что-то писать, я вас слушаю..."));
+                        break;
                 }
                 break;
         }

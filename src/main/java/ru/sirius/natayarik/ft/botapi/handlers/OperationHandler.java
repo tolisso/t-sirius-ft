@@ -83,13 +83,13 @@ public class OperationHandler implements InputMessageHandler {
             case ASK_CATEGORY:
                 telegramUserService.setBotState(userId, BotState.MENU);
                 operationCash.addCategory(userId, Long.parseLong(message));
-                operationCash.addAccount(userId, accountRepository.findByUser(userRepository.findByName(String.valueOf(userId))).getId());
+                operationCash.addAccount(userId, telegramUserService.getCurrentAccountId(userId));
                 operationCash.saveOperation(userId);
                 reply = messageMenuService.getMainMenuMessage(chatId, "Операция успешно создана!"); //TODO показывать баланс после создания
                 break;
             case GET_OPERATIONS:
                 telegramUserService.setBotState(userId, BotState.MENU);
-                List<OperationEntity> listOperation = operationRepository.findAllByAccountOrderByCreationDateDesc(accountRepository.findByUser(userRepository.findByName(String.valueOf(userId))));
+                List<OperationEntity> listOperation = operationRepository.findAllByAccountOrderByCreationDateDesc(accountRepository.findById(telegramUserService.getCurrentAccountId(userId)).orElseThrow(RuntimeException::new));
                 StringBuilder result = new StringBuilder();
                 if (listOperation.isEmpty()) {
                     result.append("Вы пока не добавили ни одной операции. Чтобы добавить, воспользуйтесь первой кнопкой в меню.");
