@@ -8,6 +8,7 @@ import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 /**
@@ -23,8 +24,10 @@ public class AccountBalanceService {
         this.accountRepository = accountRepository;
     }
 
+    @Transactional
     public BigDecimal getSumByType(long accountId, TypeDTO type) {
-        return operationRepository.findAllByAccount(accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Don't find account by id")))
+        return operationRepository.findAllByAccount(accountRepository.findById(accountId)
+                .orElseThrow(() -> new NotFoundDataException("Don't find account by id")))
                 .stream()
                 .filter((operation) -> operation.getCategory().getType() == type)
                 .map((OperationEntity::getAmount))
@@ -32,6 +35,7 @@ public class AccountBalanceService {
                 .orElse(new BigDecimal(0));
     }
 
+    @Transactional
     public void updateBalance(long accountId) {
         AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Don't find account by id"));
         account.setBalance(getSumByType(accountId, TypeDTO.INCOME).subtract(getSumByType(accountId, TypeDTO.OUTCOME)));

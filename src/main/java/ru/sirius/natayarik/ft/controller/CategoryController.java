@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.services.CategoryService;
+import ru.sirius.natayarik.ft.services.UserToAccountService;
 
 import java.util.List;
 
@@ -18,10 +19,12 @@ import java.util.List;
 @RequestMapping("/api/categories")
 public class CategoryController {
     private final CategoryService categoryService;
+    private final UserToAccountService userToAccountService;
 
     @Autowired
-    public CategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService, UserToAccountService userToAccountService) {
         this.categoryService = categoryService;
+        this.userToAccountService = userToAccountService;
     }
 
 
@@ -34,9 +37,12 @@ public class CategoryController {
     @Operation(summary = "Метод для получения списка категорий пользователя по типу")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO) {
-        return categoryService.getAll(typeDTO);
+    public List<CategoryDTO> getAllCategories(@RequestParam TypeDTO typeDTO, @RequestParam Long accountId) {
+        return accountId == 0
+                ? categoryService.getAll(typeDTO)
+                : userToAccountService.getAllCategoriesFromAccount(accountId, typeDTO);
     }
+
 
     @Operation(summary = "Метод для получения категории по id")
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

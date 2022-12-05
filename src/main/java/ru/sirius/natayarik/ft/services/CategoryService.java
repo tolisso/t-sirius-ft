@@ -8,6 +8,7 @@ import ru.sirius.natayarik.ft.entity.CategoryEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,7 @@ public class CategoryService {
     public List<CategoryDTO> getAll(TypeDTO typeDTO) {
        return categoryRepository
                .findAllByTypeDTOAndUser(
-                       typeDTO, userService.getUserFromId(currentUserService.getUser().getId()))
+                       typeDTO, currentUserService.getUser())
                .stream()
                .map(categoryConverter::convertToDTO)
                .collect(Collectors.toList());
@@ -47,6 +48,7 @@ public class CategoryService {
         return categoryConverter.convertToDTO(categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundDataException("Not found category")));
     }
 
+    @Transactional
     public void delete(long categoryId) {
         categoryRepository.delete(categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundDataException("Not found category")));
     }

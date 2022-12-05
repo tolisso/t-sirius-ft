@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.services.AccountService;
+import ru.sirius.natayarik.ft.services.UserToAccountService;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, UserToAccountService userToAccountService) {
         this.accountService = accountService;
     }
 

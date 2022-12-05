@@ -1,12 +1,9 @@
 package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
-import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.UserEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
-
-import java.math.BigDecimal;
 
 /**
  * @author Yaroslav Ilin

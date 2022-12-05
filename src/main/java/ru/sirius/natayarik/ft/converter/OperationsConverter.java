@@ -50,9 +50,11 @@ public class OperationsConverter {
     public OperationEntity convertToEntityFromCreateDTO(final OperationCreateDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
-        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
+        result.setAccount(accountRepository.findById(operationDTO.getAccountId())
+                .orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
         result.setAmount(operationDTO.getAmount());
-        result.setCategory(categoryRepository.findById(operationDTO.getCategoryId()).orElseThrow(() -> new NotFoundDataException("Not found category by ID")));
+        result.setCategory(categoryRepository.findById(operationDTO.getCategoryId())
+                .orElseThrow(() -> new NotFoundDataException("Not found category by ID")));
         result.setId(operationDTO.getId());
         return result;
     }
@@ -61,7 +63,8 @@ public class OperationsConverter {
     public OperationEntity convertToEntityFromFullDTO(final FullOperationDTO operationDTO) {
         OperationEntity result = new OperationEntity();
         result.setCreationDate(operationDTO.getCreationDate());
-        result.setAccount(accountRepository.findById(operationDTO.getAccountId()).orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
+        result.setAccount(accountRepository.findById(operationDTO.getAccountId())
+                .orElseThrow(() -> new NotFoundDataException("Not found account by ID")));
         result.setAmount(operationDTO.getAmount());
         result.setCategory(categoryConverter.convertToEntity(operationDTO.getCategoryDTO()));
         result.setId(operationDTO.getId());
