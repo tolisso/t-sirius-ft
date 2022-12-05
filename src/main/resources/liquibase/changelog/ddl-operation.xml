@@ -76,12 +76,17 @@
         </createIndex>
     </changeSet>
 
-    <!--<changeSet id="create-telegram-user" author="nata">
+    <changeSet id="create-telegram-user" author="nata">
         <createTable tableName="telegram_users">
-            <column name="user_id" type="int">
+            <column name="telegram_user_id" type="varchar(11)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="state" type="varchar(255)"/>
+            <column name="current_account_id" type="bigint">
+                <constraints foreignKeyName="telegram_users_accounts_fk"
+                             referencedTableName="accounts"
+                             referencedColumnNames="id"/>
+            </column>
         </createTable>
-    </changeSet>-->
+    </changeSet>
 </databaseChangeLog>

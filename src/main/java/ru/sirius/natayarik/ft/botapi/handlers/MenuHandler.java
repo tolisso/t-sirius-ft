@@ -4,8 +4,8 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
-import ru.sirius.natayarik.ft.cache.StateCash;
 import ru.sirius.natayarik.ft.services.MessageMenuService;
+import ru.sirius.natayarik.ft.services.TelegramUserService;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,37 +17,42 @@ import java.util.List;
 @Component
 public class MenuHandler implements InputMessageHandler {
     private final MessageMenuService messageMenuService;
-    private final StateCash stateCash;
     private final OperationHandler operationHandler;
+    private final AccountHandler accountHandler;
+    private final TelegramUserService telegramUserService;
 
-    public MenuHandler(MessageMenuService messageMenuService, StateCash stateCash, OperationHandler operationHandler) {
+    public MenuHandler(MessageMenuService messageMenuService, OperationHandler operationHandler, AccountHandler accountHandler, TelegramUserService telegramUserService) {
         this.messageMenuService = messageMenuService;
-        this.stateCash = stateCash;
         this.operationHandler = operationHandler;
+        this.accountHandler = accountHandler;
+        this.telegramUserService = telegramUserService;
     }
 
     @Override
-    public List<SendMessage> handle(String message, int userId, long chatId) {
-        BotState state = stateCash.getBotState(userId);
+    public List<SendMessage> handle(String message, String userId, long chatId) {
+        BotState state = telegramUserService.getBotState(userId);
         List<SendMessage> reply = new ArrayList<>();
         switch (state) {
             case START:
-                stateCash.saveBotState(userId, BotState.MENU);
+                telegramUserService.setBotState(userId, BotState.MENU);
                 reply.add(messageMenuService.getMainMenuMessage(chatId, "Добро пожаловать! Воспользуйтесь главным меню."));
                 break;
             case MENU:
                 switch (message) {
                     case "Создать операцию":
-                        stateCash.saveBotState(userId, BotState.CREATE_OPERATIONS);
+                        telegramUserService.setBotState(userId, BotState.CREATE_OPERATIONS);
                         reply = operationHandler.handle(message, userId, chatId);
                         break;
                     case "Посмотреть мои операции":
-                        stateCash.saveBotState(userId, BotState.GET_OPERATIONS);
+                        telegramUserService.setBotState(userId, BotState.GET_OPERATIONS);
                         reply = operationHandler.handle(message, userId, chatId);
                         break;
                     case "Сменить кошелек":
+                        telegramUserService.setBotState(userId, BotState.CHANGE_ACCOUNT);
+                        reply = accountHandler.handle(message, userId, chatId);
                         break;
                     case "Расшарить текущий кошелек":
+                        reply = List.of(messageMenuService.getMainMenuMessage(chatId, "Данная функция пока не поддерживается"));
                         break;
                 }
                 break;

@@ -2,12 +2,9 @@ package ru.sirius.natayarik.ft.botapi.handlers;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
 import ru.sirius.natayarik.ft.cache.OperationCash;
-import ru.sirius.natayarik.ft.cache.StateCash;
 import ru.sirius.natayarik.ft.data.TypeDTO;
 import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
@@ -15,9 +12,9 @@ import ru.sirius.natayarik.ft.repository.CategoryRepository;
 import ru.sirius.natayarik.ft.repository.OperationRepository;
 import ru.sirius.natayarik.ft.repository.UserRepository;
 import ru.sirius.natayarik.ft.services.MessageMenuService;
+import ru.sirius.natayarik.ft.services.TelegramUserService;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +24,7 @@ import java.util.Map;
  */
 @Component
 public class OperationHandler implements InputMessageHandler {
-    private final StateCash stateCash;
+    private final TelegramUserService telegramUserService;
     private final OperationCash operationCash;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
@@ -35,8 +32,8 @@ public class OperationHandler implements InputMessageHandler {
     private final OperationRepository operationRepository;
     private final MessageMenuService messageMenuService;
 
-    public OperationHandler(StateCash stateCash, OperationCash operationCash, CategoryRepository categoryRepository, UserRepository userRepository, AccountRepository accountRepository, OperationRepository operationRepository, MessageMenuService messageMenuService) {
-        this.stateCash = stateCash;
+    public OperationHandler(TelegramUserService telegramUserService, OperationCash operationCash, CategoryRepository categoryRepository, UserRepository userRepository, AccountRepository accountRepository, OperationRepository operationRepository, MessageMenuService messageMenuService) {
+        this.telegramUserService = telegramUserService;
         this.operationCash = operationCash;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
@@ -46,14 +43,14 @@ public class OperationHandler implements InputMessageHandler {
     }
 
     @Override
-    public List<SendMessage> handle(String message, int userId, long chatId) {
-        BotState state = stateCash.getBotState(userId);
+    public List<SendMessage> handle(String message, String userId, long chatId) {
+        BotState state = telegramUserService.getBotState(userId);
         SendMessage reply;
         switch (state) {
             case CREATE_OPERATIONS:
                 reply = messageMenuService.getWithoutMenuMessage(chatId, "Введите сумму операции");
                 operationCash.createOperation(userId);
-                stateCash.saveBotState(userId, BotState.ASK_AMOUNT);
+                telegramUserService.setBotState(userId, BotState.ASK_AMOUNT);
                 break;
             case ASK_AMOUNT:
                 try {
@@ -62,18 +59,16 @@ public class OperationHandler implements InputMessageHandler {
                         throw new NumberFormatException();
                     }
                     operationCash.addAmount(userId, amount);
-                    reply = messageMenuService.getWithoutMenuMessage(chatId,"Выберите тип операции");
                     Map<String, String> typeMap = new HashMap<>();
                     typeMap.put(TypeDTO.INCOME.name(), TypeDTO.INCOME.getLabel());
                     typeMap.put(TypeDTO.OUTCOME.name(), TypeDTO.OUTCOME.getLabel());
-                    reply.setReplyMarkup(getKeyboard(typeMap));
-                    stateCash.saveBotState(userId, BotState.ASK_TYPE);
+                    reply = messageMenuService.getInlineMenuMessage(chatId, "Выберите тип операции", typeMap);
+                    telegramUserService.setBotState(userId, BotState.ASK_TYPE);
                 } catch (NumberFormatException e) {
                     reply = messageMenuService.getWithoutMenuMessage(chatId,"Сумма операции должна быть положительным числом. Попробуйте ещё раз!");
                 }
                 break;
             case ASK_TYPE:
-                reply = messageMenuService.getWithoutMenuMessage(chatId,"Выберите категорию:");
                 Map<String, String> categoryMap = new HashMap<>();
                 if (message.equals("INCOME")) {
                     categoryRepository.findAllByTypeDTOAndUser(TypeDTO.INCOME, userRepository.findByName(String.valueOf(userId)))
@@ -82,18 +77,18 @@ public class OperationHandler implements InputMessageHandler {
                     categoryRepository.findAllByTypeDTOAndUser(TypeDTO.OUTCOME, userRepository.findByName(String.valueOf(userId)))
                             .forEach(category -> categoryMap.put(String.valueOf(category.getId()), category.getName()));
                 }
-                reply.setReplyMarkup(getKeyboard(categoryMap));
-                stateCash.saveBotState(userId, BotState.ASK_CATEGORY);
+                reply = messageMenuService.getInlineMenuMessage(chatId,"Выберите категорию:", categoryMap);
+                telegramUserService.setBotState(userId, BotState.ASK_CATEGORY);
                 break;
             case ASK_CATEGORY:
-                stateCash.saveBotState(userId, BotState.MENU);
+                telegramUserService.setBotState(userId, BotState.MENU);
                 operationCash.addCategory(userId, Long.parseLong(message));
                 operationCash.addAccount(userId, accountRepository.findByUser(userRepository.findByName(String.valueOf(userId))).getId());
                 operationCash.saveOperation(userId);
                 reply = messageMenuService.getMainMenuMessage(chatId, "Операция успешно создана!"); //TODO показывать баланс после создания
                 break;
             case GET_OPERATIONS:
-                stateCash.saveBotState(userId, BotState.MENU);
+                telegramUserService.setBotState(userId, BotState.MENU);
                 List<OperationEntity> listOperation = operationRepository.findAllByAccountOrderByCreationDateDesc(accountRepository.findByUser(userRepository.findByName(String.valueOf(userId))));
                 StringBuilder result = new StringBuilder();
                 if (listOperation.isEmpty()) {
@@ -120,20 +115,5 @@ public class OperationHandler implements InputMessageHandler {
     @Override
     public List<String> operatedCallBackQuery() {
         return null;
-    }
-
-    private InlineKeyboardMarkup getKeyboard(Map<String, String> buttons) {
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        for (String name: buttons.keySet()) {
-            List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
-            InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setCallbackData(name);
-            button.setText(buttons.get(name));
-            keyboardButtonsRow.add(button);
-            rowList.add(keyboardButtonsRow);
-        }
-        inlineKeyboardMarkup.setKeyboard(rowList);
-        return inlineKeyboardMarkup;
     }
 }

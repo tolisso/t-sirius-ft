@@ -5,9 +5,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.sirius.natayarik.ft.cache.StateCash;
-import ru.sirius.natayarik.ft.entity.TelegramUserEntity;
 import ru.sirius.natayarik.ft.repository.TelegramUserRepository;
+import ru.sirius.natayarik.ft.services.TelegramUserService;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,31 +17,24 @@ import java.util.List;
 @Component
 public class TelegramFacade {
     private final List<InputMessageHandler> handlers;
-    private final TelegramUserRepository telegramUserRepository;
-    private final StateCash stateCash;
+    private final TelegramUserService telegramUserService;
 
-    public TelegramFacade(List<InputMessageHandler> handlers, TelegramUserRepository telegramUserRepository, StateCash stateCash) {
+    public TelegramFacade(List<InputMessageHandler> handlers, TelegramUserService telegramUserService) {
         this.handlers = handlers;
-        this.telegramUserRepository = telegramUserRepository;
-        this.stateCash = stateCash;
+        this.telegramUserService = telegramUserService;
     }
 
-    public List<SendMessage> handleUpdate(Update update) {
+    public List<SendMessage> handleUpdate(Update update) { //TODO сделать менее повторный if
         if (update.hasMessage() && update.getMessage().hasText()) {
             Message message = update.getMessage();
-            BotState state = stateCash.getBotState(message.getFrom().getId());
-
-            /*int userId = update.getMessage().getFrom().getId();
-            TelegramUserEntity telegramUser = telegramUserRepository.findById(userId)
-                    .orElseGet(() -> telegramUserRepository.save(new TelegramUserEntity(userId)));*/
-            return getHandlerByState(state).handle(message.getText(), message.getFrom().getId(), message.getChatId());
+            String userId = String.valueOf(message.getFrom().getId());
+            BotState state = telegramUserService.getBotState(userId);
+            return getHandlerByState(state).handle(message.getText(), userId, message.getChatId());
         } else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
-            BotState state = stateCash.getBotState(callbackQuery.getFrom().getId());
-            /*int userId = update.getMessage().getFrom().getId();
-            TelegramUserEntity telegramUser = telegramUserRepository.findById(userId)
-                    .orElseGet(() -> telegramUserRepository.save(new TelegramUserEntity(userId)));*/
-            return getHandlerByState(state).handle(callbackQuery.getData(), callbackQuery.getFrom().getId(), callbackQuery.getMessage().getChatId());
+            String userId = String.valueOf(callbackQuery.getFrom().getId());
+            BotState state = telegramUserService.getBotState(userId);
+            return getHandlerByState(state).handle(callbackQuery.getData(), userId, callbackQuery.getMessage().getChatId());
         } else {
             return Collections.emptyList();
         }

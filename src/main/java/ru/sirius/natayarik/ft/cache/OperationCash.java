@@ -17,29 +17,29 @@ import java.util.Map;
  */
 @Component
 public class OperationCash {
-    private final Map<Integer, OperationCreateDTO> operationCash = new HashMap<>();
+    private final Map<String, OperationCreateDTO> operationCash = new HashMap<>();
     private final OperationService operationService;
 
     public OperationCash(OperationService operationService) {
         this.operationService = operationService;
     }
 
-    public void createOperation(int userId) {
+    public void createOperation(String userId) {
         operationCash.put(userId, new OperationCreateDTO());
     }
-    public void addAmount(int userId, BigDecimal amount) {
+    public void addAmount(String userId, BigDecimal amount) {
         operationCash.get(userId).setAmount(amount);
     }
 
-    public void addCategory(int userId, long categoryId) {
+    public void addCategory(String userId, long categoryId) {
         operationCash.get(userId).setCategoryId(categoryId);
     }
 
-    public void addAccount(int userId, long accountId) {
+    public void addAccount(String userId, long accountId) {
         operationCash.get(userId).setAccountId(accountId);
     }
 
-    public OperationCreateDTO saveOperation(int userId) {
+    public OperationCreateDTO saveOperation(String userId) {
         return operationService.create(operationCash.get(userId));
     }
 }

@@ -2,20 +2,31 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Egor Malko
  */
 @Service
 public class MessageMenuService {
+   public SendMessage getInlineMenuMessage(final long chatId, final String textMessage, Map<String, String> buttons) {
+      InlineKeyboardMarkup inlineKeyboardMarkup = getInlineKeyboard(buttons);
+      final SendMessage inlineMenuMessage =
+              createMessageWithKeyboard(chatId, textMessage, inlineKeyboardMarkup);
+
+      return inlineMenuMessage;
+   }
+
    public SendMessage getWithoutMenuMessage(final long chatId, final String textMessage) {
       ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove(true);
       final SendMessage withoutMenuMessage =
@@ -48,6 +59,21 @@ public class MessageMenuService {
       keyboard.add(row2);
       replyKeyboardMarkup.setKeyboard(keyboard);
       return replyKeyboardMarkup;
+   }
+
+   private InlineKeyboardMarkup getInlineKeyboard(Map<String, String> buttons) {
+      InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+      List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+      for (String name: buttons.keySet()) {
+         List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+         InlineKeyboardButton button = new InlineKeyboardButton();
+         button.setCallbackData(name);
+         button.setText(buttons.get(name));
+         keyboardButtonsRow.add(button);
+         rowList.add(keyboardButtonsRow);
+      }
+      inlineKeyboardMarkup.setKeyboard(rowList);
+      return inlineKeyboardMarkup;
    }
 
    private SendMessage createMessageWithKeyboard(final long chatId,

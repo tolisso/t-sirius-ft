@@ -10,7 +10,7 @@ import java.util.List;
  * @author Egor Malko
  */
 public interface InputMessageHandler {
-   List<SendMessage> handle(String message, int userId, long chatId);
+   List<SendMessage> handle(String message, String userId, long chatId);
    List<BotState> getOperatedState();
    List<String> operatedCallBackQuery();
 }
