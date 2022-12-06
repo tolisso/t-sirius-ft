@@ -19,6 +19,10 @@ public class OperationEntity {
    private long id;
 
    @ManyToOne
+   @JoinColumn(name = "user_id")
+   private UserEntity userEntity;
+
+   @ManyToOne
    @JoinColumn(name = "account_id")
    private AccountEntity account;
    @Column(name = "amount")
@@ -29,6 +33,14 @@ public class OperationEntity {
 
    @Column(name = "date")
    private ZonedDateTime creationDate;
+
+   public UserEntity getUserEntity() {
+      return userEntity;
+   }
+
+   public void setUserEntity(UserEntity userEntity) {
+      this.userEntity = userEntity;
+   }
 
    public ZonedDateTime getCreationDate() {
       return creationDate;

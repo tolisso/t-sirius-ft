@@ -13,6 +13,7 @@ import ru.sirius.natayarik.ft.repository.OperationRepository;
 
 import javax.transaction.Transactional;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,19 +44,23 @@ public class OperationService {
 
     @Transactional
     public List<FullOperationDTO> getAll(final long accountId) {
+        return getAllToEntity(accountId)
+                .stream()
+                .map(operationsConverter::convertToFullDTO)
+                .collect(Collectors.toList());
+    }
 
+    @Transactional
+    public List<OperationEntity> getAllToEntity(final long accountId) {
         AccountEntity account = accountRepository
                 .findById(accountId)
                 .orElseThrow(() -> new NotFoundDataException("Don't find account."));
         if (!userToAccountService.checkPermissionCurrentUserWithAccount(account)) {
             throw new PermissionDeniedException("Current user doesn't have permission to interact with the account");
         }
-        return operationRepository
+        return new ArrayList<>(operationRepository
                 .findAllByAccountOrderByCreationDateDesc(
-                        account)
-                .stream()
-                .map(operationsConverter::convertToFullDTO)
-                .collect(Collectors.toList());
+                        account));
     }
 
     public FullOperationDTO getFromId(final long operationId) {

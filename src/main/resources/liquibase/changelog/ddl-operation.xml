@@ -113,4 +113,14 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="create-user-in-operation" author="yar">
+        <addColumn tableName="operations">
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="operations_users_fk"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

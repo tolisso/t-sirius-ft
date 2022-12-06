@@ -8,6 +8,7 @@ import ru.sirius.natayarik.ft.converter.AccountConverter;
 import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
+import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
 
@@ -108,7 +109,7 @@ public class TelegramOperationService {
       try {
          telegramUserService.setBotState(BotState.MENU);
          AccountEntity account = telegramUserService.getCurrentAccount();
-         List<FullOperationDTO> listOperation = operationService.getAll(account.getId());
+         List<OperationEntity> listOperation = operationService.getAllToEntity(account.getId());
          StringBuilder result = new StringBuilder();
          if (listOperation.isEmpty()) {
             result.append("Вы пока не добавили ни одной операции. Чтобы добавить, воспользуйтесь первой кнопкой в меню.");
@@ -116,8 +117,14 @@ public class TelegramOperationService {
             result.append(String.format("Баланс: %.2f\nДоход: %.2f\nРасход: %.2f\n\n", account.getBalance(), accountConverter.convertToDTO(account).getIncome(), accountConverter.convertToDTO(account).getOutcome()));
             result.append("Операции:\n\n");
          }
-         for (FullOperationDTO operation : listOperation) {
-            result.append(String.format("Сумма: %.2f\nТип: %s\nКатегория %s\nДата создания: %tD %tT.\n\n", operation.getAmount(), operation.getCategoryDTO().getType().getLabel(), operation.getCategoryDTO().getName(), operation.getCreationDate(), operation.getCreationDate()));
+         for (OperationEntity operation : listOperation) {
+            result.append(String.format("Сумма: %.2f\nТип: %s\nКатегория: %s\nСоздатель: %s\nДата создания: %tD %tT.\n\n",
+                    operation.getAmount(),
+                    operation.getCategory().getType().getLabel(),
+                    operation.getCategory().getName(),
+                    operation.getUserEntity().getName(),
+                    operation.getCreationDate(),
+                    operation.getCreationDate()));
          }
          return List.of(messageMenuService.getMainMenuMessage(chatId, result.toString()));
       } catch (NullPointerException e) {

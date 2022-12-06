@@ -7,6 +7,7 @@ import ru.sirius.natayarik.ft.entity.OperationEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.CategoryRepository;
+import ru.sirius.natayarik.ft.services.CurrentUserService;
 
 import javax.transaction.Transactional;
 
@@ -19,11 +20,13 @@ public class OperationsConverter {
     private final AccountRepository accountRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryConverter categoryConverter;
+    private final CurrentUserService currentUserService;
 
-    public OperationsConverter(AccountRepository accountRepository, CategoryRepository categoryRepository, CategoryConverter categoryConverter) {
+    public OperationsConverter(AccountRepository accountRepository, CategoryRepository categoryRepository, CategoryConverter categoryConverter, CurrentUserService currentUserService) {
         this.accountRepository = accountRepository;
         this.categoryRepository = categoryRepository;
         this.categoryConverter = categoryConverter;
+        this.currentUserService = currentUserService;
     }
 
     public OperationCreateDTO convertToCreateDTO(final OperationEntity operationEntity) {
@@ -56,6 +59,7 @@ public class OperationsConverter {
         result.setCategory(categoryRepository.findById(operationDTO.getCategoryId())
                 .orElseThrow(() -> new NotFoundDataException("Not found category by ID")));
         result.setId(operationDTO.getId());
+        result.setUserEntity(currentUserService.getUser());
         return result;
     }
 
@@ -68,6 +72,7 @@ public class OperationsConverter {
         result.setAmount(operationDTO.getAmount());
         result.setCategory(categoryConverter.convertToEntity(operationDTO.getCategoryDTO()));
         result.setId(operationDTO.getId());
+        result.setUserEntity(currentUserService.getUser());
         return result;
     }
 }
