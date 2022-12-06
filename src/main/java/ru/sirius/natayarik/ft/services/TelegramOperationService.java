@@ -114,15 +114,19 @@ public class TelegramOperationService {
          if (listOperation.isEmpty()) {
             result.append("Вы пока не добавили ни одной операции. Чтобы добавить, воспользуйтесь первой кнопкой в меню.");
          } else {
-            result.append(String.format("Баланс: %.2f\nДоход: %.2f\nРасход: %.2f\n\n", account.getBalance(), accountConverter.convertToDTO(account).getIncome(), accountConverter.convertToDTO(account).getOutcome()));
+            result.append(String.format("Баланс: <b>%.2f</b>\nДоход: <b>%.2f</b>\nРасход: <b>%.2f</b>\n\n", account.getBalance(), accountConverter.convertToDTO(account).getIncome(), accountConverter.convertToDTO(account).getOutcome()));
             result.append("Операции:\n\n");
          }
          for (OperationEntity operation : listOperation) {
-            result.append(String.format("Сумма: %.2f\nТип: %s\nКатегория: %s\nСоздатель: %s\nДата создания: %tD %tT.\n\n",
+            result.append(String.format("<b>Сумма</b>: <b>%.2f</b>\n" +
+                            "Тип: %s\n" +
+                            "Категория: %s\n" +
+                            "Создатель: <b>%s</b>\n" +
+                            "Дата создания: %tD %tT.\n\n",
                     operation.getAmount(),
                     operation.getCategory().getType().getLabel(),
                     operation.getCategory().getName(),
-                    operation.getUserEntity().getName(),
+                    telegramUserService.getTelegramUserByUserId(operation.getUserEntity().getName()).getUserName(),
                     operation.getCreationDate(),
                     operation.getCreationDate()));
          }

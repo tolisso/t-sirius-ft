@@ -8,6 +8,7 @@ import ru.sirius.natayarik.ft.repository.UserRepository;
 import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 import ru.sirius.natayarik.ft.services.AccountBalanceService;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
 
@@ -24,6 +25,7 @@ public class AccountConverter {
         this.userToAccountRepository = userToAccountRepository;
     }
 
+    @Transactional
     public AccountDTO convertToDTO(AccountEntity accountEntity) {
         AccountDTO result = new AccountDTO();
         result.setId(accountEntity.getId());

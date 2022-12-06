@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class MessageMenuService {
       final ReplyKeyboardMarkup replyKeyboardMarkup = getMainMenuKeyboard();
       final SendMessage mainMenuMessage =
               createMessageWithKeyboard(chatId, textMessage, replyKeyboardMarkup);
-
+      mainMenuMessage.setParseMode("HTML");
       return mainMenuMessage;
    }
 
@@ -64,7 +65,9 @@ public class MessageMenuService {
    private InlineKeyboardMarkup getInlineKeyboard(Map<String, String> buttons) {
       InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
       List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-      for (String name: buttons.keySet()) {
+      List<String> keys = new ArrayList<>(buttons.keySet());
+      Collections.sort(keys);
+      for (String name: keys) {
          List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
          InlineKeyboardButton button = new InlineKeyboardButton();
          button.setCallbackData(name);
