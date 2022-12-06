@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
  * @author Yaroslav Ilin
  */
 
-public class FullOperationDTO extends BaseOperationDTO{
+public class FullOperationDTO extends BaseOperationDTO {
     @NotNull
     @Schema(description = "Категория операции")
     private CategoryDTO categoryDTO;

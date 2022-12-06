@@ -2,11 +2,13 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.AccountConverter;
+import ru.sirius.natayarik.ft.data.AccountCreateDTO;
 import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.data.Role;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
+import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
@@ -33,15 +35,20 @@ public class AccountService {
         this.userToAccountRepository = userToAccountRepository;
     }
 
+    @Transactional
     public AccountDTO getAccountById(final long id) {
-        return accountConverter.convertToDTO(accountRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found account")));
+        AccountEntity account = accountRepository.findById(id).orElseThrow(() -> new NotFoundDataException("Not found account"));
+        if (userToAccountRepository.findByAccountAndUser(account, currentUserService.getUser()) == null) {
+            throw new PermissionDeniedException("User doesn't have access to this account.");
+        }
+        return accountConverter.convertToDTO(account);
+    }
+
+    public AccountDTO create(final AccountCreateDTO accountDTO) {
+        return accountConverter.convertToDTO(create(accountConverter.convertFromCreateDTO(accountDTO)));
     }
 
     @Transactional
-    public AccountDTO create(final AccountDTO accountDTO) {
-        return accountConverter.convertToDTO(create(accountConverter.convertToEntity(accountDTO)));
-    }
-
     public AccountEntity create(final AccountEntity accountEntity) {
         AccountEntity result = accountRepository.save(accountEntity);
         userToAccountRepository.save(new UserToAccountEntity(currentUserService.getUser(), result, Role.OWNER));
@@ -49,19 +56,31 @@ public class AccountService {
     }
 
     public List<AccountDTO> getAll() {
-        return accountRepository
-                .findAllByUser(currentUserService.getUser())
+        return userToAccountRepository.
+                findAllByUser(currentUserService.getUser())
                 .stream()
-                .map(accountConverter::convertToDTO)
+                .map(entity -> accountConverter.convertToDTO(entity.getAccount()))
                 .collect(Collectors.toList());
+
     }
 
     @Transactional
     public void delete(long accountId) {
-        accountRepository.delete(accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Not found account")));
+        accountRepository.delete(safeGetOwnerAccount(accountId));
     }
 
+    @Transactional
     public AccountDTO change(final AccountDTO accountDTO) {
+        safeGetOwnerAccount(accountDTO.getId());
         return accountConverter.convertToDTO(accountRepository.save(accountConverter.convertToEntity(accountDTO)));
+    }
+
+    private AccountEntity safeGetOwnerAccount(final long accountId) {
+        AccountEntity account = accountRepository.findById(accountId).orElseThrow(() -> new NotFoundDataException("Not found account"));
+        UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndUser(account, currentUserService.getUser());
+        if (userToAccountEntity == null || userToAccountEntity.getRole() != Role.OWNER) {
+            throw new PermissionDeniedException("User doesn't have access to this account.");
+        }
+        return account;
     }
 }
