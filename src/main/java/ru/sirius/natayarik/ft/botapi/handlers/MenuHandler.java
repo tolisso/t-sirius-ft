@@ -2,13 +2,13 @@ package ru.sirius.natayarik.ft.botapi.handlers;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
 import ru.sirius.natayarik.ft.services.MessageMenuService;
 import ru.sirius.natayarik.ft.services.TelegramUserService;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -29,7 +29,7 @@ public class MenuHandler implements InputMessageHandler {
     }
 
     @Override
-    public List<SendMessage> handle(String message, long chatId) {
+    public List<SendMessage> handleMessage(Message message, long chatId) {
         BotState state = telegramUserService.getBotState();
         List<SendMessage> reply = new ArrayList<>();
         switch (state) {
@@ -38,23 +38,25 @@ public class MenuHandler implements InputMessageHandler {
                 reply.add(messageMenuService.getMainMenuMessage(chatId, "Добро пожаловать! Воспользуйтесь главным меню."));
                 break;
             case MENU:
-                switch (message) {
+                switch (message.getText()) {
                     case "Создать операцию":
                         telegramUserService.setBotState(BotState.CREATE_OPERATIONS);
-                        reply = operationHandler.handle(message, chatId);
+                        reply = operationHandler.handleMessage(message, chatId);
                         break;
                     case "Посмотреть мои операции":
                         telegramUserService.setBotState(BotState.GET_OPERATIONS);
-                        reply = operationHandler.handle(message, chatId);
+                        reply = operationHandler.handleMessage(message, chatId);
                         break;
                     case "Сменить кошелек":
                         telegramUserService.setBotState(BotState.CHANGE_ACCOUNT);
-                        reply = accountHandler.handle(message, chatId);
+                        reply = accountHandler.handleMessage(message, chatId);
                         break;
                     case "Расшарить текущий кошелек":
-                        reply = List.of(messageMenuService.getMainMenuMessage(chatId, "Данная функция пока не поддерживается"));
+                        telegramUserService.setBotState(BotState.SHARED_ACCOUNT);
+                        reply = accountHandler.handleMessage(message, chatId);
                         break;
                     default:
+                        //SendMessage m = new SendMessage();
                         reply = List.of(messageMenuService.getMainMenuMessage(chatId, "Такой команды не существует, но можете просто что-то писать, я вас слушаю..."));
                         break;
                 }

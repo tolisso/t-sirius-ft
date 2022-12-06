@@ -15,5 +15,7 @@ public enum BotState {
     CHANGE_ACCOUNT,
     CHOSE_ACCOUNT,
     CREATE_ACCOUNT,
-    GET_BALANCE
+    GET_BALANCE,
+    SHARED_ACCOUNT,
+    CHOSE_MEMBER
 }

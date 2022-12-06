@@ -23,17 +23,19 @@ public class TelegramOperationService {
    private final CategoryService categoryService;
    private final OperationService operationService;
    private final MessageMenuService messageMenuService;
+   private final UserToAccountService userToAccountService;
 
    public TelegramOperationService(TelegramUserService telegramUserService,
                                    OperationCash operationCash,
                                    CategoryService categoryService,
                                    OperationService operationService,
-                                   MessageMenuService messageMenuService) {
+                                   MessageMenuService messageMenuService, UserToAccountService userToAccountService) {
       this.telegramUserService = telegramUserService;
       this.operationCash = operationCash;
       this.categoryService = categoryService;
       this.operationService = operationService;
       this.messageMenuService = messageMenuService;
+      this.userToAccountService = userToAccountService;
    }
 
    public List<SendMessage> createOperation(long chatId) {
@@ -71,7 +73,8 @@ public class TelegramOperationService {
 
    private SendMessage getCategoryChoseMessage(long chatId, Type type) {
       Map<String, String> categoryMap = new HashMap<>();
-      categoryService.getAll(type)
+      userToAccountService.getAllCategoriesFromAccount(telegramUserService.getCurrentAccount().getId(), type)
+      //categoryService.getAll(type)
               .forEach(category -> categoryMap.put(String.valueOf(category.getId()), category.getName()));
       telegramUserService.setBotState(type.equals(Type.INCOME) ? BotState.ASK_INCOME_CATEGORY : BotState.ASK_OUTCOME_CATEGORY);
       return messageMenuService.getInlineMenuMessage(chatId,"Выберите категорию:", categoryMap);

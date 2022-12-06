@@ -43,6 +43,13 @@ public class MessageMenuService {
       return mainMenuMessage;
    }
 
+   public SendMessage getWithContactMessage(final long chatId, final String textMessage) {
+      final ReplyKeyboardMarkup replyKeyboardMarkup = getContactKeyBoard();
+      final SendMessage contactMessage =
+              createMessageWithKeyboard(chatId, textMessage, replyKeyboardMarkup);
+      return contactMessage;
+   }
+
    private ReplyKeyboardMarkup getMainMenuKeyboard() {
       final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
       replyKeyboardMarkup.setSelective(true);
@@ -87,6 +94,22 @@ public class MessageMenuService {
          sendMessage.setReplyMarkup(replyKeyboardMarkup);
       }
       return sendMessage;
+   }
+
+   private ReplyKeyboardMarkup getContactKeyBoard() {
+      final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
+      replyKeyboardMarkup.setSelective(true);
+      replyKeyboardMarkup.setResizeKeyboard(true);
+      replyKeyboardMarkup.setResizeKeyboard(true);
+      List<KeyboardRow> keyboard = new ArrayList<>();
+      KeyboardRow row = new KeyboardRow();
+      KeyboardButton contactButton = new KeyboardButton();
+      contactButton.setText("Выбери пользователя, которого хочешь добавить в кошелёк:");
+      contactButton.setRequestContact(true);
+      row.add(contactButton);
+      keyboard.add(row);
+      replyKeyboardMarkup.setKeyboard(keyboard);
+      return replyKeyboardMarkup;
    }
 
    public SendMessage getAskClickMessage(long chatId) {

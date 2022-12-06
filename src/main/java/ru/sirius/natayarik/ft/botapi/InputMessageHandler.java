@@ -1,8 +1,8 @@
 package ru.sirius.natayarik.ft.botapi;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import ru.sirius.natayarik.ft.entity.TelegramUserEntity;
 
 import java.util.List;
 
@@ -10,6 +10,11 @@ import java.util.List;
  * @author Egor Malko
  */
 public interface InputMessageHandler {
-   List<SendMessage> handle(String message, long chatId);
+   List<SendMessage> handleMessage(Message message, long chatId);
+   default List<SendMessage> handleCallbackQuery(CallbackQuery data, long chatId) {
+      Message message = new Message();
+      message.setText(data.getData());
+      return handleMessage(message, chatId);
+   }
    List<BotState> getOperatedState();
 }

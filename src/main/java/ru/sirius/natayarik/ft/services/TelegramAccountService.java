@@ -2,9 +2,12 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Contact;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
+import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -20,12 +23,14 @@ public class TelegramAccountService {
     private final AccountService accountService;
     private final MessageMenuService messageMenuService;
     private final CurrentUserService currentUserService;
+    private final UserToAccountService userToAccountService;
 
-    public TelegramAccountService(TelegramUserService telegramUserService, AccountService accountService, MessageMenuService messageMenuService, CurrentUserService currentUserService) {
+    public TelegramAccountService(TelegramUserService telegramUserService, AccountService accountService, MessageMenuService messageMenuService, CurrentUserService currentUserService, UserToAccountService userToAccountService) {
         this.telegramUserService = telegramUserService;
         this.accountService = accountService;
         this.messageMenuService = messageMenuService;
         this.currentUserService = currentUserService;
+        this.userToAccountService = userToAccountService;
     }
 
     public List<SendMessage> sendAllAccountsAndNew(long chatId) {
@@ -68,5 +73,29 @@ public class TelegramAccountService {
         telegramUserService.setBotState(BotState.MENU);
         return List.of(messageMenuService.getMainMenuMessage(chatId,
                 String.format("Вы создали кошелёк %s и перешли в него, баланс %.2f", account.getName(), account.getBalance())));
+    }
+
+    public List<SendMessage> chosePerson(long chatId) {
+        telegramUserService.setBotState(BotState.CHOSE_MEMBER);
+        return List.of(messageMenuService.getWithoutMenuMessage(chatId, "Пришлите контакт человека, которого хотите добавить в кошелёк"));
+    }
+
+    public List<SendMessage> sharedAccount(long chatId, Message message) {
+        try {
+            if (!message.hasContact()) {
+                return List.of(messageMenuService.getWithoutMenuMessage(chatId, "Вы не прислали контакт, попробуйте ещё раз"));
+            }
+            telegramUserService.setBotState(BotState.MENU);
+            Contact contact = message.getContact();
+            if (contact.getUserID() == null) {
+                return List.of(messageMenuService.getMainMenuMessage(chatId, "Вы не можете добавить этого пользователя в кошелек, так как его нет у вас в контактах"));
+            }
+            userToAccountService.addUserToAccount(telegramUserService.getCurrentAccount().getId(), String.valueOf(contact.getUserID()));
+            return List.of(messageMenuService.getMainMenuMessage(chatId, String.format("Пользователь %s %s успешно добавлен в кошелек", contact.getFirstName(), contact.getLastName())));
+        } catch (PermissionDeniedException e) {
+            return List.of(messageMenuService.getMainMenuMessage(chatId, "Вы не можете добавить пользователя в этот кошелек, так как не являетесь его владельцем"));
+        } catch (NotFoundDataException e) {
+            return List.of(messageMenuService.getMainMenuMessage(chatId, "Вы не можете добавить этого пользователя в кошелек, так как он не пользуется нашим ботом"));
+        }
     }
 }

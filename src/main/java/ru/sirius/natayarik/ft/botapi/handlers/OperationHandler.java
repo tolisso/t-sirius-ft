@@ -2,6 +2,8 @@ package ru.sirius.natayarik.ft.botapi.handlers;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
 import ru.sirius.natayarik.ft.services.*;
@@ -26,18 +28,18 @@ public class OperationHandler implements InputMessageHandler {
     }
 
     @Override
-    public List<SendMessage> handle(String message, long chatId) {
+    public List<SendMessage> handleMessage(Message message, long chatId) {
         BotState state = telegramUserService.getBotState();
         switch (state) {
             case CREATE_OPERATIONS:
                 return telegramOperationService.createOperation(chatId);
             case ASK_AMOUNT:
-                return telegramOperationService.addAmount(chatId, message);
+                return telegramOperationService.addAmount(chatId, message.getText());
             case ASK_TYPE:
-                return telegramOperationService.choseType(chatId, message);
+                return telegramOperationService.choseType(chatId, message.getText());
             case ASK_INCOME_CATEGORY:
             case ASK_OUTCOME_CATEGORY:
-                return telegramOperationService.choseCategoryAndSaveOperation(chatId, message);
+                return telegramOperationService.choseCategoryAndSaveOperation(chatId, message.getText());
             case GET_OPERATIONS:
                 return telegramOperationService.sendOperations(chatId);
             default:

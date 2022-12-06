@@ -6,6 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.sirius.natayarik.ft.services.CurrentUserService;
+import ru.sirius.natayarik.ft.services.MessageMenuService;
 import ru.sirius.natayarik.ft.services.TelegramUserService;
 
 import java.util.Collections;
@@ -19,26 +20,28 @@ public class TelegramFacade {
     private final List<InputMessageHandler> handlers;
     private final TelegramUserService telegramUserService;
     private final CurrentUserService currentUserService;
+    private  final MessageMenuService messageMenuService;
 
-    public TelegramFacade(List<InputMessageHandler> handlers, TelegramUserService telegramUserService, CurrentUserService currentUserService) {
+    public TelegramFacade(List<InputMessageHandler> handlers, TelegramUserService telegramUserService, CurrentUserService currentUserService, MessageMenuService messageMenuService) {
         this.handlers = handlers;
         this.telegramUserService = telegramUserService;
         this.currentUserService = currentUserService;
+        this.messageMenuService = messageMenuService;
     }
 
-    public List<SendMessage> handleUpdate(Update update) { //TODO сделать менее повторный if
-        if (update.hasMessage() && update.getMessage().hasText()) {
+    public List<SendMessage> handleUpdate(Update update) {
+        if (update.hasMessage() && (update.getMessage().hasText() | (update.getMessage().hasContact() & telegramUserService.getBotState().equals(BotState.CHOSE_MEMBER)))) {
             Message message = update.getMessage();
             String userId = String.valueOf(message.getFrom().getId());
             currentUserService.setUser(userId);
             BotState state = telegramUserService.getBotState();
-            return getHandlerByState(state).handle(message.getText(), message.getChatId());
+            return getHandlerByState(state).handleMessage(message, message.getChatId());
         } else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String userId = String.valueOf(callbackQuery.getFrom().getId());
             currentUserService.setUser(userId);
             BotState state = telegramUserService.getBotState();
-            return getHandlerByState(state).handle(callbackQuery.getData(), callbackQuery.getMessage().getChatId());
+            return getHandlerByState(state).handleCallbackQuery(callbackQuery, callbackQuery.getMessage().getChatId());
         } else {
             return Collections.emptyList();
         }
