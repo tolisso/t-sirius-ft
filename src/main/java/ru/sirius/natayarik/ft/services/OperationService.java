@@ -93,6 +93,10 @@ public class OperationService {
         if (!userToAccountService.checkPermissionCurrentUserWithAccount(operationEntity.getAccount())) {
             throw new PermissionDeniedException("Current user doesn't have permission to interact with the account");
         }
+        if (userToAccountService.getAllCategoriesFromAccount(operationEntity.getAccount().getId(), operationEntity.getCategory().getType())
+                .stream().noneMatch(category -> category.getId() == operation.getCategoryId())) {
+            throw new PermissionDeniedException("Current user doesn't have permission to use this category");
+        }
         OperationCreateDTO result = operationsConverter.convertToCreateDTO(operationRepository.save(operationEntity));
         accountBalanceService.updateBalance(operation.getAccountId());
         return result;

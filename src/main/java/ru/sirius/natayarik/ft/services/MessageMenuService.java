@@ -43,13 +43,6 @@ public class MessageMenuService {
       return mainMenuMessage;
    }
 
-   public SendMessage getWithContactMessage(final long chatId, final String textMessage) {
-      final ReplyKeyboardMarkup replyKeyboardMarkup = getContactKeyBoard();
-      final SendMessage contactMessage =
-              createMessageWithKeyboard(chatId, textMessage, replyKeyboardMarkup);
-      return contactMessage;
-   }
-
    private ReplyKeyboardMarkup getMainMenuKeyboard() {
       final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
       replyKeyboardMarkup.setSelective(true);
@@ -61,7 +54,7 @@ public class MessageMenuService {
       row1.add(new KeyboardButton("Посмотреть мои операции"));
       keyboard.add(row1);
       KeyboardRow row2 = new KeyboardRow();
-      row2.add(new KeyboardButton("Сменить кошелек")); //В нем последняя кнопка - создать новый кошелек
+      row2.add(new KeyboardButton("Сменить кошелек"));
       row2.add(new KeyboardButton("Расшарить текущий кошелек"));
       keyboard.add(row2);
       replyKeyboardMarkup.setKeyboard(keyboard);
@@ -94,22 +87,6 @@ public class MessageMenuService {
          sendMessage.setReplyMarkup(replyKeyboardMarkup);
       }
       return sendMessage;
-   }
-
-   private ReplyKeyboardMarkup getContactKeyBoard() {
-      final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-      replyKeyboardMarkup.setSelective(true);
-      replyKeyboardMarkup.setResizeKeyboard(true);
-      replyKeyboardMarkup.setResizeKeyboard(true);
-      List<KeyboardRow> keyboard = new ArrayList<>();
-      KeyboardRow row = new KeyboardRow();
-      KeyboardButton contactButton = new KeyboardButton();
-      contactButton.setText("Выбери пользователя, которого хочешь добавить в кошелёк:");
-      contactButton.setRequestContact(true);
-      row.add(contactButton);
-      keyboard.add(row);
-      replyKeyboardMarkup.setKeyboard(keyboard);
-      return replyKeyboardMarkup;
    }
 
    public SendMessage getAskClickMessage(long chatId) {

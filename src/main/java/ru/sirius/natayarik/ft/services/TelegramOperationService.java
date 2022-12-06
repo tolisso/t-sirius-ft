@@ -3,12 +3,13 @@ package ru.sirius.natayarik.ft.services;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.sirius.natayarik.ft.botapi.BotState;
-import ru.sirius.natayarik.ft.cache.OperationCash;
+import ru.sirius.natayarik.ft.cache.OperationCache;
 import ru.sirius.natayarik.ft.converter.AccountConverter;
 import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.Type;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
+import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ import java.util.Map;
 @Service
 public class TelegramOperationService {
    private final TelegramUserService telegramUserService;
-   private final OperationCash operationCash;
+   private final OperationCache operationCache;
    private final CategoryService categoryService;
    private final OperationService operationService;
    private final MessageMenuService messageMenuService;
@@ -29,12 +30,12 @@ public class TelegramOperationService {
    private final AccountConverter accountConverter;
 
    public TelegramOperationService(TelegramUserService telegramUserService,
-                                   OperationCash operationCash,
+                                   OperationCache operationCache,
                                    CategoryService categoryService,
                                    OperationService operationService,
                                    MessageMenuService messageMenuService, UserToAccountService userToAccountService, AccountConverter accountConverter) {
       this.telegramUserService = telegramUserService;
-      this.operationCash = operationCash;
+      this.operationCache = operationCache;
       this.categoryService = categoryService;
       this.operationService = operationService;
       this.messageMenuService = messageMenuService;
@@ -44,8 +45,8 @@ public class TelegramOperationService {
 
    public List<SendMessage> createOperation(long chatId) {
       try {
-         operationCash.createOperation();
-         operationCash.addAccount(telegramUserService.getCurrentAccount().getId());
+         operationCache.createOperation();
+         operationCache.addAccount(telegramUserService.getCurrentAccount().getId());
          telegramUserService.setBotState(BotState.ASK_AMOUNT);
          return List.of(messageMenuService.getWithoutMenuMessage(chatId, "Введите сумму операции:"));
       } catch (NullPointerException e) {
@@ -60,7 +61,7 @@ public class TelegramOperationService {
          if (amount.compareTo(new BigDecimal(0)) <= 0) {
             throw new NumberFormatException();
          }
-         operationCash.addAmount(amount);
+         operationCache.addAmount(amount);
          return List.of(getTypeChoseMessage(chatId));
       } catch (NumberFormatException e) {
          return List.of(messageMenuService.getWithoutMenuMessage(chatId,"Сумма операции должна быть положительным числом. Попробуйте ещё раз!"));
@@ -78,7 +79,6 @@ public class TelegramOperationService {
    private SendMessage getCategoryChoseMessage(long chatId, Type type) {
       Map<String, String> categoryMap = new HashMap<>();
       userToAccountService.getAllCategoriesFromAccount(telegramUserService.getCurrentAccount().getId(), type)
-      //categoryService.getAll(type)
               .forEach(category -> categoryMap.put(String.valueOf(category.getId()), category.getName()));
       telegramUserService.setBotState(type.equals(Type.INCOME) ? BotState.ASK_INCOME_CATEGORY : BotState.ASK_OUTCOME_CATEGORY);
       return messageMenuService.getInlineMenuMessage(chatId,"Выберите категорию:", categoryMap);
@@ -94,11 +94,11 @@ public class TelegramOperationService {
 
    public List<SendMessage> choseCategoryAndSaveOperation(long chatId, String userAnswer) {
       try {
-         operationCash.addCategory(Long.parseLong(userAnswer)); //TODO проверка что взяли категорию из текущего кошелька/свою
-         operationCash.saveOperation();
+         operationCache.addCategory(Long.parseLong(userAnswer)); //TODO проверка что взяли категорию из текущего кошелька/свою
+         operationCache.saveOperation();
          telegramUserService.setBotState(BotState.MENU);
          return List.of(messageMenuService.getMainMenuMessage(chatId, "Операция успешно создана!"));
-      } catch (NumberFormatException | NotFoundDataException e) {
+      } catch (NumberFormatException | NotFoundDataException | PermissionDeniedException e) {
          return List.of(messageMenuService.getAskClickMessage(chatId),
                  getCategoryChoseMessage(chatId, telegramUserService.getBotState().equals(BotState.ASK_INCOME_CATEGORY) ? Type.INCOME : Type.OUTCOME));
       }

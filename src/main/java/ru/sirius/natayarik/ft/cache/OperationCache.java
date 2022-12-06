@@ -13,12 +13,12 @@ import java.util.Map;
  * @author Egor Malko
  */
 @Component
-public class OperationCash {
+public class OperationCache {
     private final Map<String, OperationCreateDTO> operationCash = new HashMap<>();
     private final OperationService operationService;
     private final CurrentUserService currentUserService;
 
-    public OperationCash(OperationService operationService, CurrentUserService currentUserService) {
+    public OperationCache(OperationService operationService, CurrentUserService currentUserService) {
         this.operationService = operationService;
         this.currentUserService = currentUserService;
     }

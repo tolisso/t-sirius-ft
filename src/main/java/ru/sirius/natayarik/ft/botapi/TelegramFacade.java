@@ -5,6 +5,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import ru.sirius.natayarik.ft.botapi.handlers.DefaultHandler;
 import ru.sirius.natayarik.ft.services.CurrentUserService;
 import ru.sirius.natayarik.ft.services.MessageMenuService;
 import ru.sirius.natayarik.ft.services.TelegramUserService;
@@ -20,13 +21,15 @@ public class TelegramFacade {
     private final List<InputMessageHandler> handlers;
     private final TelegramUserService telegramUserService;
     private final CurrentUserService currentUserService;
-    private  final MessageMenuService messageMenuService;
+    private final MessageMenuService messageMenuService;
+    private final DefaultHandler defaultHandler;
 
-    public TelegramFacade(List<InputMessageHandler> handlers, TelegramUserService telegramUserService, CurrentUserService currentUserService, MessageMenuService messageMenuService) {
+    public TelegramFacade(List<InputMessageHandler> handlers, TelegramUserService telegramUserService, CurrentUserService currentUserService, MessageMenuService messageMenuService, DefaultHandler defaultHandler) {
         this.handlers = handlers;
         this.telegramUserService = telegramUserService;
         this.currentUserService = currentUserService;
         this.messageMenuService = messageMenuService;
+        this.defaultHandler = defaultHandler;
     }
 
     public List<SendMessage> handleUpdate(Update update) {
@@ -49,8 +52,8 @@ public class TelegramFacade {
 
     private InputMessageHandler getHandlerByState(BotState state) {
         return handlers.stream()
-                .filter(h -> (h.getOperatedState() != null) && (h.getOperatedState().contains(state)))
+                .filter(handler -> (handler.getOperatedState() != null) && (handler.getOperatedState().contains(state)))
                 .findAny()
-                .orElseThrow(UnsupportedOperationException::new);
+                .orElse(defaultHandler);
     }
 }
