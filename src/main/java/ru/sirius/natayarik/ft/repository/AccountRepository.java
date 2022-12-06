@@ -11,5 +11,4 @@ import java.util.List;
  */
 
 public interface AccountRepository extends CrudRepository<AccountEntity, Long> {
-    List<AccountEntity> findAllByUser(UserEntity user);
 }

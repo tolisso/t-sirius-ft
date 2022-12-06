@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import ru.sirius.natayarik.ft.data.AccountCreateDTO;
 import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.services.AccountService;
 import ru.sirius.natayarik.ft.services.UserToAccountService;
@@ -19,13 +20,13 @@ public class AccountController {
     private final AccountService accountService;
 
     @Autowired
-    public AccountController(AccountService accountService, UserToAccountService userToAccountService) {
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @Operation(summary = "Метод для создания кошелька")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public AccountDTO createAccount(@RequestBody AccountDTO account) {
+    public AccountDTO createAccount(@RequestBody AccountCreateDTO account) {
         return accountService.create(account);
     }
 
