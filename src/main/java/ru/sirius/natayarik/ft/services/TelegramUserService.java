@@ -2,6 +2,7 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.botapi.BotState;
+import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.TelegramUserEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.TelegramUserRepository;
@@ -45,7 +46,7 @@ public class TelegramUserService {
         telegramUserRepository.save(user);
     }
 
-    public long getCurrentAccountId() {
-        return telegramUserRepository.findByUserId(currentUserService.getUser().getName()).getAccountEntity().getId();
+    public AccountEntity getCurrentAccount() {
+        return telegramUserRepository.findByUserId(currentUserService.getUser().getName()).getAccountEntity();
     }
 }

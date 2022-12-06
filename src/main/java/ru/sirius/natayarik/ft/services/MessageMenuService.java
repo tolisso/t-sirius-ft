@@ -88,4 +88,12 @@ public class MessageMenuService {
       }
       return sendMessage;
    }
+
+   public SendMessage getAskClickMessage(long chatId) {
+      return getWithoutMenuMessage(chatId, "Пожалуйста, не надо ничего вводить - нажмите на одну из предложенных кнопок");
+   }
+
+   public SendMessage getNotChoseAccountMessage(long chatId) {
+      return getMainMenuMessage(chatId, "Функция недоступна, так как сейчас у вас нет кошельков. Чтобы создать новый, нажмите в главном меню на 'Сменить кошелек'");
+   }
 }

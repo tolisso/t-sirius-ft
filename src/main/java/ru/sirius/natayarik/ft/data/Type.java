@@ -5,8 +5,8 @@ package ru.sirius.natayarik.ft.data;
  */
 
 public enum Type {
-    INCOME("доход"),
-    OUTCOME("расход");
+    INCOME("Доход"),
+    OUTCOME("Расход");
 
     private final String label;
 

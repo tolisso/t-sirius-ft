@@ -4,16 +4,10 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.botapi.InputMessageHandler;
-import ru.sirius.natayarik.ft.data.AccountDTO;
-import ru.sirius.natayarik.ft.services.AccountService;
-import ru.sirius.natayarik.ft.services.CurrentUserService;
-import ru.sirius.natayarik.ft.services.MessageMenuService;
-import ru.sirius.natayarik.ft.services.TelegramUserService;
+import ru.sirius.natayarik.ft.services.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Egor Malko
@@ -21,15 +15,11 @@ import java.util.Map;
 @Component
 public class AccountHandler implements InputMessageHandler {
     private final TelegramUserService telegramUserService;
-    private final AccountService accountService;
-    private final MessageMenuService messageMenuService;
-    private final CurrentUserService currentUserService;
+    private final TelegramAccountService telegramAccountService;
 
-    public AccountHandler(TelegramUserService telegramUserService, AccountService accountService, MessageMenuService messageMenuService, CurrentUserService currentUserService) {
+    public AccountHandler(TelegramUserService telegramUserService, TelegramAccountService telegramAccountService) {
         this.telegramUserService = telegramUserService;
-        this.accountService = accountService;
-        this.messageMenuService = messageMenuService;
-        this.currentUserService = currentUserService;
+        this.telegramAccountService = telegramAccountService;
     }
 
     @Override
@@ -38,37 +28,15 @@ public class AccountHandler implements InputMessageHandler {
         List<SendMessage> reply = new ArrayList<>();
         switch (state) {
             case CHANGE_ACCOUNT:
-                Map<String, String> accountMap = new HashMap<>();
-                accountService.getAll()
-                        .forEach(account -> accountMap.put(String.valueOf(account.getId()), account.getName()));
-                accountMap.put("new", "Создать новый");
-                reply.add(messageMenuService.getWithoutMenuMessage(chatId, "Выберите кошелек"));
-                reply.add(messageMenuService.getInlineMenuMessage(chatId, "или создайте новый:", accountMap));
-                telegramUserService.setBotState(BotState.CHOSE_ACCOUNT);
-                break;
+                return telegramAccountService.sendAllAccountsAndNew(chatId);
             case CHOSE_ACCOUNT:
                 if (message.equals("new")) {
-                    reply.add(messageMenuService.getWithoutMenuMessage(chatId, "Введите имя кошелька:"));
-                    telegramUserService.setBotState(BotState.CREATE_ACCOUNT);
+                    return telegramAccountService.createAccount(chatId);
                 } else {
-                    long accountId = Long.parseLong(message);
-                    AccountDTO account = accountService.getAccountById(accountId);
-                    reply.add(messageMenuService.getMainMenuMessage(chatId,
-                            String.format("Вы перешли в кошелёк %s, баланс %.2f", account.getName(), account.getBalance())));
-                    telegramUserService.setCurrentAccount(accountId);
-                    telegramUserService.setBotState(BotState.MENU);
+                    return telegramAccountService.choseAccount(chatId, message);
                 }
-                break;
             case CREATE_ACCOUNT:
-                AccountDTO newAccount = new AccountDTO();
-                newAccount.setName(message);
-                newAccount.setUserId(currentUserService.getUser().getId());
-                AccountDTO account = accountService.create(newAccount);
-                telegramUserService.setCurrentAccount(account.getId());
-                reply.add(messageMenuService.getMainMenuMessage(chatId,
-                        String.format("Вы создали кошелёк %s и перешли в него, баланс %.2f", account.getName(), account.getBalance())));
-                telegramUserService.setBotState(BotState.MENU);
-                break;
+                return telegramAccountService.saveAccount(chatId, message);
         }
         return reply;
     }
