@@ -66,6 +66,9 @@ public class UserToAccountService {
         AccountEntity accountEntity = accountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundDataException("Not found account"));
         UserToAccountEntity userToAccountEntity = userToAccountRepository.findByAccountAndRole(accountEntity, Role.OWNER);
+        if (userToAccountEntity == null) {
+            throw new NotFoundDataException("Not found account owner.");
+        }
         if (userToAccountEntity.getUser().getId() != currentUserService.getUser().getId()) {
             throw new PermissionDeniedException("Current user don't have permission to invite users to this account"); // TODO
         }
