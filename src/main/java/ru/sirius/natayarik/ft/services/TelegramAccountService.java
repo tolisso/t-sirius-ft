@@ -65,7 +65,7 @@ public class TelegramAccountService {
             telegramUserService.setCurrentAccount(accountId);
             telegramUserService.setBotState(BotState.MENU);
             return List.of(messageMenuService.getMainMenuMessage(chatId,
-                    String.format("Вы перешли в кошелёк %s, баланс %.2f", account.getName(), account.getBalance())));
+                    String.format("Вы перешли в кошелёк <b>%s</b>\nБаланс: <b>%.2f</b>", account.getName(), account.getBalance())));
         } catch (NumberFormatException | NotFoundDataException | NullPointerException e) {
             List<SendMessage> result = sendAllAccountsAndNew(chatId);
             result.add(0, messageMenuService.getAskClickMessage(chatId));
