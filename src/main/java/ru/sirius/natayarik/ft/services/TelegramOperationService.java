@@ -122,7 +122,7 @@ public class TelegramOperationService {
                     operation.getAmount(),
                     operation.getCategory().getType().getLabel(),
                     operation.getCategory().getName(),
-                    operation.getUserEntity().getName(),
+                    telegramUserService.getTelegramUserByUserId(operation.getUserEntity().getName()).getUserName(),
                     operation.getCreationDate(),
                     operation.getCreationDate()));
          }
