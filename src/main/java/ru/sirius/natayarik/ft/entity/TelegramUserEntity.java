@@ -23,6 +23,11 @@ public class TelegramUserEntity implements Serializable {
     @JoinColumn(name = "current_account_id")
     private AccountEntity accountEntity;
 
+    @Column(name = "telegram_user_name")
+    private String userName;
+    @Column(name = "chat_id")
+    private Long chatId;
+
     public TelegramUserEntity() {
 
     }
@@ -49,5 +54,21 @@ public class TelegramUserEntity implements Serializable {
 
     public void setState(BotState state) {
         this.state = state;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 }

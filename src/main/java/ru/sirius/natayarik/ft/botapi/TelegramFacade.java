@@ -37,12 +37,14 @@ public class TelegramFacade {
             Message message = update.getMessage();
             String userId = String.valueOf(message.getFrom().getId());
             currentUserService.setUser(userId);
+            telegramUserService.create(message.getFrom(), message.getChatId());
             BotState state = telegramUserService.getBotState();
             return getHandlerByState(state).handleMessage(message, message.getChatId());
         } else if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             String userId = String.valueOf(callbackQuery.getFrom().getId());
             currentUserService.setUser(userId);
+            telegramUserService.create(callbackQuery.getFrom(), callbackQuery.getMessage().getChatId());
             BotState state = telegramUserService.getBotState();
             return getHandlerByState(state).handleCallbackQuery(callbackQuery, callbackQuery.getMessage().getChatId());
         } else {

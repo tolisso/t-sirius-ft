@@ -6,8 +6,10 @@ import org.telegram.telegrambots.meta.api.objects.Contact;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.data.AccountDTO;
+import ru.sirius.natayarik.ft.data.Role;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
+import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -25,7 +27,11 @@ public class TelegramAccountService {
     private final CurrentUserService currentUserService;
     private final UserToAccountService userToAccountService;
 
-    public TelegramAccountService(TelegramUserService telegramUserService, AccountService accountService, MessageMenuService messageMenuService, CurrentUserService currentUserService, UserToAccountService userToAccountService) {
+    public TelegramAccountService(TelegramUserService telegramUserService,
+                                  AccountService accountService,
+                                  MessageMenuService messageMenuService,
+                                  CurrentUserService currentUserService,
+                                  UserToAccountService userToAccountService) {
         this.telegramUserService = telegramUserService;
         this.accountService = accountService;
         this.messageMenuService = messageMenuService;
@@ -36,8 +42,12 @@ public class TelegramAccountService {
     public List<SendMessage> sendAllAccountsAndNew(long chatId) {
         telegramUserService.setBotState(BotState.CHOSE_ACCOUNT);
         Map<String, String> accountMap = new HashMap<>();
-        accountService.getAll()
-                .forEach(account -> accountMap.put(String.valueOf(account.getId()), account.getName()));
+        accountService.getAllEntity()
+                .forEach(account -> accountMap.put(String.valueOf(account.getId()),
+                        String.format("%s (%s)",
+                                account.getName(),
+                                telegramUserService.getTelegramUserByUserId(userToAccountService.getByAccountAndRole(account,
+                                        Role.OWNER).getUser().getName()).getUserName())));
         accountMap.put("new", "Создать новый");
         return List.of(messageMenuService.getWithoutMenuMessage(chatId, "Выберите кошелек"),
                 messageMenuService.getInlineMenuMessage(chatId, "или создайте новый:", accountMap));
@@ -91,7 +101,14 @@ public class TelegramAccountService {
                 return List.of(messageMenuService.getMainMenuMessage(chatId, "Вы не можете добавить этого пользователя в кошелек, так как его нет у вас в контактах"));
             }
             userToAccountService.addUserToAccount(telegramUserService.getCurrentAccount().getId(), String.valueOf(contact.getUserID()));
-            return List.of(messageMenuService.getMainMenuMessage(chatId, String.format("Пользователь %s %s успешно добавлен в кошелек", contact.getFirstName(), contact.getLastName())));
+            return List.of(messageMenuService.getMainMenuMessage(chatId,
+                            String.format("Пользователь %s %s успешно добавлен в кошелек",
+                                    contact.getFirstName(),
+                                    contact.getLastName())),
+                    messageMenuService.getMainMenuMessage(telegramUserService.getTelegramUserByUserId(String.valueOf(contact.getUserID())).getChatId(),
+                            String.format("<b>%s</b> добавил вас в свой кошелек: <b>%s</b>",
+                                    telegramUserService.getTelegramUserByUserId(currentUserService.getUser().getName()).getUserName(),
+                                    telegramUserService.getCurrentAccount().getName())));
         } catch (PermissionDeniedException e) {
             return List.of(messageMenuService.getMainMenuMessage(chatId, "Вы не можете добавить пользователя в этот кошелек, так как не являетесь его владельцем"));
         } catch (NotFoundDataException e) {

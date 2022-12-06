@@ -117,7 +117,7 @@ public class TelegramOperationService {
             result.append("Операции:\n\n");
          }
          for (FullOperationDTO operation : listOperation) {
-            result.append(String.format("Сумма: %.2f\nТип: %s\nКатегория %s\nДата создания: %tD %tT.\n\n", operation.getAmount(), operation.getCategoryDTO().getType().getLabel(), operation.getCategoryDTO().getName(), operation.getCreationDate(), operation.getCreationDate()));
+            result.append(String.format("Сумма: %.2f\nТип: %s\nКатегория: %s\nДата создания: %tD %tT\n\n", operation.getAmount(), operation.getCategoryDTO().getType().getLabel(), operation.getCategoryDTO().getName(), operation.getCreationDate(), operation.getCreationDate()));
          }
          return List.of(messageMenuService.getMainMenuMessage(chatId, result.toString()));
       } catch (NullPointerException e) {
