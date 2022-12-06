@@ -130,11 +130,4 @@
             <column name="telegram_user_name" type="varchar(255)"/>
         </addColumn>
     </changeSet>
-
-    <changeSet id="add-chat-id-and-name" author="nata">
-        <addColumn tableName="telegram_users">
-            <column name="chat_id" type="bigint"/>
-            <column name="telegram_user_name" type="varchar(255)"/>
-        </addColumn>
-    </changeSet>
 </databaseChangeLog>
