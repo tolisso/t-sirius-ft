@@ -1,6 +1,7 @@
 package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.User;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.TelegramUserEntity;
@@ -26,15 +27,28 @@ public class TelegramUserService {
     }
 
     public BotState getBotState() {
-        TelegramUserEntity user = telegramUserRepository.findByUserId(currentUserService.getUser().getName());
-        if (user == null) {
-            TelegramUserEntity newUser = new TelegramUserEntity();
-            newUser.setUserId(currentUserService.getUser().getName());
-            newUser.setState(BotState.START);
-            newUser.setAccountEntity(userToAccountRepository.findAllByUser(currentUserService.getUser()).get(0).getAccount());
-            user = telegramUserRepository.save(newUser);
+        return telegramUserRepository.findByUserId(currentUserService.getUser().getName()).getState();
+    }
+
+    public TelegramUserEntity create(User user, long chatId) {
+        TelegramUserEntity newUser = new TelegramUserEntity();
+        newUser.setUserId(currentUserService.getUser().getName());
+        newUser.setState(BotState.START);
+        newUser.setAccountEntity(userToAccountRepository.findAllByUser(currentUserService.getUser()).get(0).getAccount());
+        newUser.setChatId(chatId);
+        if (user.getUserName() != null) {
+            newUser.setUserName(user.getUserName());
+        } else if (user.getLastName() != null) {
+            newUser.setUserName(user.getFirstName() + " " + user.getLastName());
+        } else {
+            newUser.setUserName(user.getFirstName());
         }
-        return user.getState();
+        TelegramUserEntity oldUser = telegramUserRepository.findByUserId(currentUserService.getUser().getName());
+        if (oldUser == null) {
+            return telegramUserRepository.save(newUser);
+        } else {
+            return oldUser;
+        }
     }
 
     public void setBotState(BotState state) {
@@ -51,5 +65,9 @@ public class TelegramUserService {
 
     public AccountEntity getCurrentAccount() {
         return telegramUserRepository.findByUserId(currentUserService.getUser().getName()).getAccountEntity();
+    }
+
+    public TelegramUserEntity getTelegramUserByUserId(String userId) {
+        return telegramUserRepository.findByUserId(userId);
     }
 }

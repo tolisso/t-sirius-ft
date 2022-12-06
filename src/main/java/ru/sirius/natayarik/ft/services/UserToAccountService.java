@@ -2,6 +2,7 @@ package ru.sirius.natayarik.ft.services;
 
 import org.springframework.stereotype.Service;
 import ru.sirius.natayarik.ft.converter.CategoryConverter;
+import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.data.CategoryDTO;
 import ru.sirius.natayarik.ft.data.Role;
 import ru.sirius.natayarik.ft.data.Type;
@@ -85,5 +86,9 @@ public class UserToAccountService {
 
     public boolean checkPermissionCurrentUserWithAccount(AccountEntity accountEntity) {
         return userToAccountRepository.findByAccountAndUser(accountEntity, currentUserService.getUser()) != null;
+    }
+
+    public UserToAccountEntity getByAccountAndRole(AccountEntity account, Role role) {
+        return userToAccountRepository.findByAccountAndRole(account, role);
     }
 }

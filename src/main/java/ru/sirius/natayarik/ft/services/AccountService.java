@@ -65,12 +65,16 @@ public class AccountService {
     }
 
     public List<AccountDTO> getAll() {
+        return getAllEntity().stream().map(accountConverter::convertToDTO).collect(Collectors.toList());
+
+    }
+
+    public List<AccountEntity> getAllEntity() {
         return userToAccountRepository.
                 findAllByUser(currentUserService.getUser())
                 .stream()
-                .map(entity -> accountConverter.convertToDTO(entity.getAccount()))
+                .map(UserToAccountEntity::getAccount)
                 .collect(Collectors.toList());
-
     }
 
     @Transactional
