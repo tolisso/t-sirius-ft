@@ -6,6 +6,7 @@ import ru.sirius.natayarik.ft.data.AccountCreateDTO;
 import ru.sirius.natayarik.ft.data.AccountDTO;
 import ru.sirius.natayarik.ft.data.Role;
 import ru.sirius.natayarik.ft.entity.AccountEntity;
+import ru.sirius.natayarik.ft.entity.UserEntity;
 import ru.sirius.natayarik.ft.entity.UserToAccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 import ru.sirius.natayarik.ft.exception.PermissionDeniedException;
@@ -52,6 +53,13 @@ public class AccountService {
     public AccountEntity create(final AccountEntity accountEntity) {
         AccountEntity result = accountRepository.save(accountEntity);
         userToAccountRepository.save(new UserToAccountEntity(currentUserService.getUser(), result, Role.OWNER));
+        return result;
+    }
+
+    @Transactional
+    public AccountEntity create(final AccountEntity accountEntity, final UserEntity userEntity) {
+        AccountEntity result = accountRepository.save(accountEntity);
+        userToAccountRepository.save(new UserToAccountEntity(userEntity, result, Role.OWNER));
         return result;
     }
 

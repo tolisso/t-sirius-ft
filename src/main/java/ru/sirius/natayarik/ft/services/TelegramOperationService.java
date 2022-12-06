@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import ru.sirius.natayarik.ft.botapi.BotState;
 import ru.sirius.natayarik.ft.cache.OperationCash;
+import ru.sirius.natayarik.ft.converter.AccountConverter;
 import ru.sirius.natayarik.ft.data.FullOperationDTO;
 import ru.sirius.natayarik.ft.data.Type;
+import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.exception.NotFoundDataException;
 
 import java.math.BigDecimal;
@@ -24,18 +26,20 @@ public class TelegramOperationService {
    private final OperationService operationService;
    private final MessageMenuService messageMenuService;
    private final UserToAccountService userToAccountService;
+   private final AccountConverter accountConverter;
 
    public TelegramOperationService(TelegramUserService telegramUserService,
                                    OperationCash operationCash,
                                    CategoryService categoryService,
                                    OperationService operationService,
-                                   MessageMenuService messageMenuService, UserToAccountService userToAccountService) {
+                                   MessageMenuService messageMenuService, UserToAccountService userToAccountService, AccountConverter accountConverter) {
       this.telegramUserService = telegramUserService;
       this.operationCash = operationCash;
       this.categoryService = categoryService;
       this.operationService = operationService;
       this.messageMenuService = messageMenuService;
       this.userToAccountService = userToAccountService;
+      this.accountConverter = accountConverter;
    }
 
    public List<SendMessage> createOperation(long chatId) {
@@ -103,15 +107,17 @@ public class TelegramOperationService {
    public List<SendMessage> sendOperations(long chatId) {
       try {
          telegramUserService.setBotState(BotState.MENU);
-         List<FullOperationDTO> listOperation = operationService.getAll(telegramUserService.getCurrentAccount().getId());
+         AccountEntity account = telegramUserService.getCurrentAccount();
+         List<FullOperationDTO> listOperation = operationService.getAll(account.getId());
          StringBuilder result = new StringBuilder();
          if (listOperation.isEmpty()) {
             result.append("Вы пока не добавили ни одной операции. Чтобы добавить, воспользуйтесь первой кнопкой в меню.");
          } else {
-            result.append("Ваши операции:\n\n");
+            result.append(String.format("Баланс: %.2f\nДоход: %.2f\nРасход: %.2f\n\n", account.getBalance(), accountConverter.convertToDTO(account).getIncome(), accountConverter.convertToDTO(account).getOutcome()));
+            result.append("Операции:\n\n");
          }
          for (FullOperationDTO operation : listOperation) {
-            result.append(String.format("Сумма %.2f, тип %s, категория %s, дата создания %tc.\n", operation.getAmount(), operation.getCategoryDTO().getType().getLabel(), operation.getCategoryDTO().getName(), operation.getCreationDate()));
+            result.append(String.format("Сумма: %.2f\nТип: %s\nКатегория %s\nДата создания: %tD %tT.\n\n", operation.getAmount(), operation.getCategoryDTO().getType().getLabel(), operation.getCategoryDTO().getName(), operation.getCreationDate(), operation.getCreationDate()));
          }
          return List.of(messageMenuService.getMainMenuMessage(chatId, result.toString()));
       } catch (NullPointerException e) {

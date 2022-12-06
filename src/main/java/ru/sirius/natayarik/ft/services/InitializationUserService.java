@@ -57,7 +57,7 @@ public class InitializationUserService {
             AccountEntity account = new AccountEntity();
             account.setBalance(new BigDecimal(0));
             account.setName("Кошелек 1");
-            accountService.create(account);
+            accountService.create(account, userEntity);
         }
     }
 

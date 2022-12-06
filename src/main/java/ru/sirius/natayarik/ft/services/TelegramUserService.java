@@ -6,6 +6,7 @@ import ru.sirius.natayarik.ft.entity.AccountEntity;
 import ru.sirius.natayarik.ft.entity.TelegramUserEntity;
 import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.TelegramUserRepository;
+import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
 /**
  * @author Egor Malko
@@ -15,11 +16,13 @@ public class TelegramUserService {
     private final TelegramUserRepository telegramUserRepository;
     private final AccountRepository accountRepository;
     private final CurrentUserService currentUserService;
+    private final UserToAccountRepository userToAccountRepository;
 
-    public TelegramUserService(TelegramUserRepository telegramUserRepository, AccountRepository accountRepository, CurrentUserService currentUserService) {
+    public TelegramUserService(TelegramUserRepository telegramUserRepository, AccountRepository accountRepository, CurrentUserService currentUserService, UserToAccountRepository userToAccountRepository) {
         this.telegramUserRepository = telegramUserRepository;
         this.accountRepository = accountRepository;
         this.currentUserService = currentUserService;
+        this.userToAccountRepository = userToAccountRepository;
     }
 
     public BotState getBotState() {
@@ -28,7 +31,7 @@ public class TelegramUserService {
             TelegramUserEntity newUser = new TelegramUserEntity();
             newUser.setUserId(currentUserService.getUser().getName());
             newUser.setState(BotState.START);
-            newUser.setAccountEntity(accountRepository.findByUser(currentUserService.getUser()));
+            newUser.setAccountEntity(userToAccountRepository.findAllByUser(currentUserService.getUser()).get(0).getAccount());
             user = telegramUserRepository.save(newUser);
         }
         return user.getState();

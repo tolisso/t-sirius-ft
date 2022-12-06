@@ -30,7 +30,7 @@ public class TelegramFacade {
     }
 
     public List<SendMessage> handleUpdate(Update update) {
-        if (update.hasMessage() && (update.getMessage().hasText() | (update.getMessage().hasContact() & telegramUserService.getBotState().equals(BotState.CHOSE_MEMBER)))) {
+        if (update.hasMessage() && (update.getMessage().hasText() | (update.getMessage().hasContact() && telegramUserService.getBotState().equals(BotState.CHOSE_MEMBER)))) {
             Message message = update.getMessage();
             String userId = String.valueOf(message.getFrom().getId());
             currentUserService.setUser(userId);
