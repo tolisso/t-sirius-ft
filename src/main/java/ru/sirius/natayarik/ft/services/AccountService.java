@@ -14,6 +14,7 @@ import ru.sirius.natayarik.ft.repository.AccountRepository;
 import ru.sirius.natayarik.ft.repository.UserToAccountRepository;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +80,8 @@ public class AccountService {
 
     @Transactional
     public AccountDTO change(final AccountDTO accountDTO) {
-        safeGetOwnerAccount(accountDTO.getId());
+        AccountEntity accountEntity = safeGetOwnerAccount(accountDTO.getId());
+        accountDTO.setBalance(accountEntity.getBalance());
         return accountConverter.convertToDTO(accountRepository.save(accountConverter.convertToEntity(accountDTO)));
     }
 
