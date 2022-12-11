@@ -22,18 +22,12 @@ import java.util.Map;
 public class MessageMenuService {
    public SendMessage getInlineMenuMessage(final long chatId, final String textMessage, Map<String, String> buttons) {
       InlineKeyboardMarkup inlineKeyboardMarkup = getInlineKeyboard(buttons);
-      final SendMessage inlineMenuMessage =
-              createMessageWithKeyboard(chatId, textMessage, inlineKeyboardMarkup);
-
-      return inlineMenuMessage;
+      return createMessageWithKeyboard(chatId, textMessage, inlineKeyboardMarkup);
    }
 
    public SendMessage getWithoutMenuMessage(final long chatId, final String textMessage) {
       ReplyKeyboardRemove replyKeyboardRemove = new ReplyKeyboardRemove(true);
-      final SendMessage withoutMenuMessage =
-              createMessageWithKeyboard(chatId, textMessage, replyKeyboardRemove);
-
-      return withoutMenuMessage;
+      return createMessageWithKeyboard(chatId, textMessage, replyKeyboardRemove);
    }
 
    public SendMessage getMainMenuMessage(final long chatId, final String textMessage) {

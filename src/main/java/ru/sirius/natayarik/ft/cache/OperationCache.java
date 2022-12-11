@@ -6,15 +6,15 @@ import ru.sirius.natayarik.ft.services.CurrentUserService;
 import ru.sirius.natayarik.ft.services.OperationService;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Egor Malko
  */
 @Component
 public class OperationCache {
-    private final Map<String, OperationCreateDTO> operationCash = new HashMap<>();
+    private final Map<String, OperationCreateDTO> operationCash = new ConcurrentHashMap<>();
     private final OperationService operationService;
     private final CurrentUserService currentUserService;
 
