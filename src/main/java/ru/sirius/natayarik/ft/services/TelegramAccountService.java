@@ -97,15 +97,15 @@ public class TelegramAccountService {
             }
             telegramUserService.setBotState(BotState.MENU);
             Contact contact = message.getContact();
-            if (contact.getUserID() == null) {
+            if (contact.getUserId() == null) {
                 return List.of(messageMenuService.getMainMenuMessage(chatId, "Вы не можете добавить этого пользователя в кошелек, так как его нет у вас в контактах"));
             }
-            userToAccountService.addUserToAccount(telegramUserService.getCurrentAccount().getId(), String.valueOf(contact.getUserID()));
+            userToAccountService.addUserToAccount(telegramUserService.getCurrentAccount().getId(), String.valueOf(contact.getUserId()));
             return List.of(messageMenuService.getMainMenuMessage(chatId,
                             String.format("Пользователь %s %s успешно добавлен в кошелек",
                                     contact.getFirstName(),
                                     contact.getLastName())),
-                    messageMenuService.getMainMenuMessage(telegramUserService.getTelegramUserByUserId(String.valueOf(contact.getUserID())).getChatId(),
+                    messageMenuService.getMainMenuMessage(telegramUserService.getTelegramUserByUserId(String.valueOf(contact.getUserId())).getChatId(),
                             String.format("<b>%s</b> добавил вас в свой кошелек: <b>%s</b>",
                                     telegramUserService.getTelegramUserByUserId(currentUserService.getUser().getName()).getUserName(),
                                     telegramUserService.getCurrentAccount().getName())));
